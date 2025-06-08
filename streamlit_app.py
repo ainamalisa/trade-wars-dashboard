@@ -198,7 +198,7 @@ if section == "Correlation Analysis":
 
         # Clean data
         data.replace('..', np.nan, inplace=True)
-        rows_to_drop = data[data['Time'].between(2015, 2019)].index
+        rows_to_drop = data[data['Time'].between(2015, 2017)].index
         data = data.drop(rows_to_drop)
 
         for col in data.columns[4:]:
