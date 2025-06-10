@@ -1,0 +1,4 @@
+Scenario,Tariff_Change,Avg_GDP_Growth,Avg_Unemployment,Description
+Baseline,0,2.571904307060132,4.736251354373419,Current policies continue
+Tariff Increase,5,0.6962778697330929,-4.152993766891884,5 percentage point tariff increase
+Tariff Decrease,-2,3.309955319254552,8.056702209033926,2 percentage point tariff decrease

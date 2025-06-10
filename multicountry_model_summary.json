@@ -1,0 +1,80 @@
+{
+  "model_performance": {
+    "Random Forest": {
+      "train_r2": 0.953473005720382,
+      "train_mae": 0.2705984632303337
+    },
+    "Gradient Boosting": {
+      "train_r2": 0.9998172831714065,
+      "train_mae": 0.022798967618738536
+    },
+    "Linear Regression": {
+      "train_r2": 0.7835660100552784,
+      "train_mae": 0.5383236521411284
+    },
+    "Ridge Regression": {
+      "train_r2": 0.783494194868159,
+      "train_mae": 0.5340943352190143
+    }
+  },
+  "best_model": "Random Forest",
+  "scenario_impacts": {
+    "overall_impact": "-34.5%",
+    "us_china_impact": "-0.4%"
+  },
+  "feature_importance": [
+    {
+      "feature": "us_china_pair",
+      "importance": 0.4389367309899518
+    },
+    {
+      "feature": "economic_similarity",
+      "importance": 0.17139238688145295
+    },
+    {
+      "feature": "gdp_differential",
+      "importance": 0.1444532379166836
+    },
+    {
+      "feature": "avg_tariff",
+      "importance": 0.07750876292639043
+    },
+    {
+      "feature": "tariff_differential",
+      "importance": 0.0373582725281289
+    },
+    {
+      "feature": "c1_gdp_growth",
+      "importance": 0.03513317872354926
+    },
+    {
+      "feature": "c2_gdp_growth",
+      "importance": 0.029830471289766854
+    },
+    {
+      "feature": "c1_inflation",
+      "importance": 0.021494073619714817
+    },
+    {
+      "feature": "c2_inflation",
+      "importance": 0.016075761430438252
+    },
+    {
+      "feature": "c2_tariff",
+      "importance": 0.008169466466035592
+    }
+  ],
+  "countries_analyzed": [
+    "China",
+    "Korea, Rep.",
+    "Malaysia",
+    "United States",
+    "Viet Nam",
+    "Germany"
+  ],
+  "forecast_years": [
+    2025,
+    2026,
+    2027
+  ]
+}
