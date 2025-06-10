@@ -5,7 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
+import streamlit as st
+import matplotlib.colors as mcolors
 warnings.filterwarnings('ignore')
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # Statistical and ML libraries
 from sklearn.model_selection import train_test_split, TimeSeriesSplit, cross_val_score
@@ -22,7 +26,7 @@ try:
     from statsmodels.tsa.statespace.sarimax import SARIMAX
     from statsmodels.tsa.seasonal import seasonal_decompose
     from statsmodels.stats.diagnostic import acorr_ljungbox
-    from statsmodels.tsa.stattools import adfuller
+    from statsmodels.tsa.stattools import adfuller, acf, pacf
 except ImportError:
     import subprocess
     subprocess.check_call(["pip", "install", "statsmodels"])
@@ -295,52 +299,92 @@ def show():
     modeling_df.to_csv('data/enhanced_modeling_dataset.csv', index=False)
 
     # Create visualization of key features
-
-    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    # Create 2x2 subplot grid
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=[
+            "US-China Electronics Trade Volumes",
+            "US-China Electronics Trade Balance",
+            "GDP Growth Differential (US - China)",
+            "Year-over-Year Change in Imports"
+        ]
+    )
 
     # Plot 1: Trade volumes over time
-    axes[0,0].plot(modeling_df['year'], modeling_df['imports_from_china'], 'b-o', label='Imports from China', linewidth=2)
-    axes[0,0].plot(modeling_df['year'], modeling_df['exports_to_china'], 'r-s', label='Exports to China', linewidth=2)
-    axes[0,0].axvline(x=2018.5, color='gray', linestyle='--', alpha=0.7, label='Trade War Start')
-    axes[0,0].set_title('US-China Electronics Trade Volumes', fontweight='bold')
-    axes[0,0].set_xlabel('Year')
-    axes[0,0].set_ylabel('Trade Value (Billions USD)')
-    axes[0,0].legend()
-    axes[0,0].grid(True, alpha=0.3)
+    fig.add_trace(go.Scatter(
+        x=modeling_df['year'], y=modeling_df['imports_from_china'],
+        mode='lines+markers', name='Imports from China',
+        line=dict(color='blue')
+    ), row=1, col=1)
+
+    fig.add_trace(go.Scatter(
+        x=modeling_df['year'], y=modeling_df['exports_to_china'],
+        mode='lines+markers', name='Exports to China',
+        line=dict(color='red')
+    ), row=1, col=1)
+
+    fig.add_vline(x=2018.5, line_dash='dash', line_color='gray', row=1, col=1)
 
     # Plot 2: Trade balance
-    axes[0,1].bar(modeling_df['year'], modeling_df['trade_balance'], 
-                color=['red' if x < 0 else 'green' for x in modeling_df['trade_balance']], alpha=0.7)
-    axes[0,1].axhline(y=0, color='black', linestyle='-', alpha=0.5)
-    axes[0,1].axvline(x=2018.5, color='gray', linestyle='--', alpha=0.7)
-    axes[0,1].set_title('US-China Electronics Trade Balance', fontweight='bold')
-    axes[0,1].set_xlabel('Year')
-    axes[0,1].set_ylabel('Trade Balance (Billions USD)')
-    axes[0,1].grid(True, alpha=0.3)
+    fig.add_trace(go.Bar(
+        x=modeling_df['year'], y=modeling_df['trade_balance'],
+        marker_color=[
+            'green' if val >= 0 else 'red' for val in modeling_df['trade_balance']
+        ],
+        name='Trade Balance'
+    ), row=1, col=2)
+
+    fig.add_hline(y=0, line_color='black', row=1, col=2)
+    fig.add_vline(x=2018.5, line_dash='dash', line_color='gray', row=1, col=2)
 
     # Plot 3: GDP growth differential
     if 'gdp_growth_differential' in modeling_df.columns:
-        axes[1,0].plot(modeling_df['year'], modeling_df['gdp_growth_differential'], 'g-o', linewidth=2)
-        axes[1,0].axhline(y=0, color='black', linestyle='-', alpha=0.5)
-        axes[1,0].axvline(x=2018.5, color='gray', linestyle='--', alpha=0.7)
-        axes[1,0].set_title('GDP Growth Differential (US - China)', fontweight='bold')
-        axes[1,0].set_xlabel('Year')
-        axes[1,0].set_ylabel('GDP Growth Difference (%)')
-        axes[1,0].grid(True, alpha=0.3)
+        fig.add_trace(go.Scatter(
+            x=modeling_df['year'], y=modeling_df['gdp_growth_differential'],
+            mode='lines+markers', name='GDP Growth Differential',
+            line=dict(color='green')
+        ), row=2, col=1)
+        fig.add_hline(y=0, line_color='black', row=2, col=1)
+        fig.add_vline(x=2018.5, line_dash='dash', line_color='gray', row=2, col=1)
 
-    # Plot 4: Year-over-year change in imports
+    # Plot 4: YoY change in imports
     if 'imports_from_china_yoy_change' in modeling_df.columns:
-        axes[1,1].bar(modeling_df['year'], modeling_df['imports_from_china_yoy_change'], 
-                    color=['red' if x < 0 else 'blue' for x in modeling_df['imports_from_china_yoy_change']], alpha=0.7)
-        axes[1,1].axhline(y=0, color='black', linestyle='-', alpha=0.5)
-        axes[1,1].axvline(x=2018.5, color='gray', linestyle='--', alpha=0.7)
-        axes[1,1].set_title('Year-over-Year Change in Imports', fontweight='bold')
-        axes[1,1].set_xlabel('Year')
-        axes[1,1].set_ylabel('YoY Change (%)')
-        axes[1,1].grid(True, alpha=0.3)
+        fig.add_trace(go.Bar(
+            x=modeling_df['year'], y=modeling_df['imports_from_china_yoy_change'],
+            marker_color=[
+                'blue' if val >= 0 else 'red' for val in modeling_df['imports_from_china_yoy_change']
+            ],
+            name='YoY Change'
+        ), row=2, col=2)
+        fig.add_hline(y=0, line_color='black', row=2, col=2)
+        fig.add_vline(x=2018.5, line_dash='dash', line_color='gray', row=2, col=2)
 
-    plt.tight_layout()
-    plt.show()
+    # Layout configuration
+    fig.update_layout(
+        height=800,
+        width=1000,
+        title_text="US-China Electronics Trade Dashboard",
+        showlegend=True,
+        legend=dict(x=1.02, y=1),
+        margin=dict(l=30, r=30, t=50, b=30)
+    )
+
+    # Axis titles
+    fig.update_xaxes(title_text="Year", row=1, col=1)
+    fig.update_yaxes(title_text="Trade Value (Billions USD)", row=1, col=1)
+
+    fig.update_xaxes(title_text="Year", row=1, col=2)
+    fig.update_yaxes(title_text="Trade Balance (Billions USD)", row=1, col=2)
+
+    fig.update_xaxes(title_text="Year", row=2, col=1)
+    fig.update_yaxes(title_text="GDP Growth Difference (%)", row=2, col=1)
+
+    fig.update_xaxes(title_text="Year", row=2, col=2)
+    fig.update_yaxes(title_text="YoY Change (%)", row=2, col=2)
+
+    # Show in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
 
     # BLOCK 4: Model 1 - Time Series Forecasting (ARIMA/SARIMAX)
     # Primary model for US-China electronics trade prediction
@@ -377,69 +421,85 @@ def show():
             diff2_series = diff_series.diff().dropna()
             check_stationarity(diff2_series, "Second Differenced Series")
 
-    # Visualize time series components
-    fig, axes = plt.subplots(3, 2, figsize=(15, 12))
+    # Prepare data
+    diff_data = target_series.diff().dropna() if len(target_series) > 1 else None
+    rolling_mean = target_series.rolling(window=3).mean()
+    rolling_std = target_series.rolling(window=3).std()
 
-    # Original series
-    axes[0,0].plot(target_series.index, target_series.values, 'b-o', linewidth=2)
-    axes[0,0].axvline(x=2018.5, color='red', linestyle='--', alpha=0.7, label='Trade War Start')
-    axes[0,0].set_title('Original Time Series: Imports from China', fontweight='bold')
-    axes[0,0].set_ylabel('Billions USD')
-    axes[0,0].legend()
-    axes[0,0].grid(True, alpha=0.3)
+    fig = make_subplots(rows=3, cols=2, subplot_titles=[
+        'Original Time Series: Imports from China',
+        'First Difference',
+        'Autocorrelation Function (ACF)',
+        'Partial Autocorrelation Function (PACF)',
+        'Rolling Statistics (3-year window)',
+        'Rolling Standard Deviation'
+    ])
 
-    # First difference
+    # 1. Original Series
+    fig.add_trace(go.Scatter(x=target_series.index, y=target_series.values,
+                            mode='lines+markers', name='Original',
+                            line=dict(color='blue')), row=1, col=1)
+    fig.add_vline(x=2018.5, line_dash="dash", line_color="red", row=1, col=1)
+
+    # 2. First Difference
     if len(target_series) > 1:
         diff_data = target_series.diff().dropna()
-        axes[0,1].plot(diff_data.index, diff_data.values, 'g-o', linewidth=2)
-        axes[0,1].axhline(y=0, color='black', linestyle='-', alpha=0.5)
-        axes[0,1].axvline(x=2018.5, color='red', linestyle='--', alpha=0.7)
-        axes[0,1].set_title('First Difference', fontweight='bold')
-        axes[0,1].set_ylabel('Change (Billions USD)')
-        axes[0,1].grid(True, alpha=0.3)
+        fig.add_trace(go.Scatter(x=diff_data.index, y=diff_data.values,
+                                mode='lines+markers', name='First Difference',
+                                line=dict(color='green')), row=1, col=2)
+        fig.add_hline(y=0, line_color="black", row=1, col=2)
+        fig.add_vline(x=2018.5, line_dash="dash", line_color="red", row=1, col=2)
 
-    # BLOCK 4 CONTINUED: Model 1 - Time Series Forecasting (ARIMA/SARIMAX)
+    # 3. ACF and PACF
+    series = target_series.dropna()
+    acf_lags = min(len(series) - 1, 4)
+    pacf_lags = min(4, len(series) // 2 - 1)
 
-    # Plot ACF and PACF if we have enough data points
-    if len(target_series) >= 4:
-        from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-        
-        try:
-            # ACF
-            plot_acf(target_series.dropna(), lags=min(len(target_series)-1, 4), ax=axes[1,0], title='Autocorrelation Function')
-            axes[1,0].grid(True, alpha=0.3)
-            
-            # PACF
-            plot_pacf(target_series.dropna(), lags=min(len(target_series)-1, 4), ax=axes[1,1], title='Partial Autocorrelation Function')
-            axes[1,1].grid(True, alpha=0.3)
-            
-        except Exception as e:
-            axes[1,0].text(0.5, 0.5, 'Insufficient data\nfor ACF plot', ha='center', va='center', transform=axes[1,0].transAxes)
-            axes[1,1].text(0.5, 0.5, 'Insufficient data\nfor PACF plot', ha='center', va='center', transform=axes[1,1].transAxes)
+    try:
+        if acf_lags >= 1:
+            acf_vals = acf(series, nlags=acf_lags)
+            fig.add_trace(go.Bar(x=list(range(len(acf_vals))), y=acf_vals, name='ACF', marker_color='steelblue'), row=2, col=1)
+        else:
+            raise ValueError("Insufficient data for ACF")
+    except Exception:
+        fig.add_annotation(text="Insufficient data<br>for ACF plot",
+                        xref="x domain", yref="y domain",
+                        x=0.5, y=0.5, showarrow=False,
+                        font=dict(color="gray", size=14), row=2, col=1)
 
-    # Rolling statistics
+    try:
+        if pacf_lags >= 1:
+            pacf_vals = pacf(series, nlags=pacf_lags)
+            fig.add_trace(go.Bar(x=list(range(len(pacf_vals))), y=pacf_vals, name='PACF', marker_color='indianred'), row=2, col=2)
+        else:
+            raise ValueError("Insufficient data for PACF")
+    except Exception:
+        fig.add_annotation(text="Insufficient data<br>for PACF plot",
+                        xref="x domain", yref="y domain",
+                        x=0.5, y=0.5, showarrow=False,
+                        font=dict(color="gray", size=14), row=2, col=2)
+
+    # 4. Rolling stats
     if len(target_series) >= 3:
         rolling_mean = target_series.rolling(window=3).mean()
         rolling_std = target_series.rolling(window=3).std()
-        
-        axes[2,0].plot(target_series.index, target_series.values, 'b-', label='Original', linewidth=2)
-        axes[2,0].plot(rolling_mean.index, rolling_mean.values, 'r--', label='Rolling Mean', linewidth=2)
-        axes[2,0].axvline(x=2018.5, color='gray', linestyle='--', alpha=0.7)
-        axes[2,0].set_title('Rolling Statistics (3-year window)', fontweight='bold')
-        axes[2,0].set_ylabel('Billions USD')
-        axes[2,0].legend()
-        axes[2,0].grid(True, alpha=0.3)
-        
-        axes[2,1].plot(rolling_std.index, rolling_std.values, 'g-o', linewidth=2)
-        axes[2,1].axvline(x=2018.5, color='red', linestyle='--', alpha=0.7, label='Trade War Start')
-        axes[2,1].set_title('Rolling Standard Deviation', fontweight='bold')
-        axes[2,1].set_ylabel('Std Dev (Billions USD)')
-        axes[2,1].legend()
-        axes[2,1].grid(True, alpha=0.3)
 
-    plt.tight_layout()
-    plt.savefig('time_series_analysis.png', dpi=300, bbox_inches='tight')
-    plt.show()
+        fig.add_trace(go.Scatter(x=target_series.index, y=target_series.values,
+                                mode='lines', name='Original', line=dict(color='blue')), row=3, col=1)
+        fig.add_trace(go.Scatter(x=rolling_mean.index, y=rolling_mean.values,
+                                mode='lines', name='Rolling Mean',
+                                line=dict(color='red', dash='dash')), row=3, col=1)
+        fig.add_vline(x=2018.5, line_dash="dash", line_color="gray", row=3, col=1)
+
+        fig.add_trace(go.Scatter(x=rolling_std.index, y=rolling_std.values,
+                                mode='lines+markers', name='Rolling Std Dev',
+                                line=dict(color='green')), row=3, col=2)
+        fig.add_vline(x=2018.5, line_dash="dash", line_color="red", row=3, col=2)
+
+    fig.update_layout(height=900, width=1100, title_text="Time Series Analysis Dashboard", showlegend=False)
+
+    # Display in Streamlit
+    st.plotly_chart(fig)
 
     # Build ARIMA models
     # Prepare data for modeling
@@ -586,44 +646,70 @@ def show():
     # Display forecast results
     print(forecasts.round(2))
 
-    # Create forecast visualization
-    plt.figure(figsize=(12, 8))
+    # Create Plotly figure
+    fig = go.Figure()
 
     # Plot historical data
-    historical_years = target_series.index
-    historical_values = target_series.values
+    fig.add_trace(go.Scatter(
+        x=target_series.index,
+        y=target_series.values,
+        mode='lines+markers',
+        name='Historical Data',
+        line=dict(color='blue'),
+        marker=dict(size=6)
+    ))
 
-    plt.plot(historical_years, historical_values, 'b-o', linewidth=2, markersize=6, label='Historical Data')
+    # Plot forecast
+    fig.add_trace(go.Scatter(
+        x=forecasts['year'],
+        y=forecasts['forecast'],
+        mode='lines+markers',
+        name='Forecast',
+        line=dict(color='red'),
+        marker=dict(symbol='square', size=8)
+    ))
 
-    # Plot forecasts
-    plt.plot(forecasts['year'], forecasts['forecast'], 'r-s', linewidth=2, markersize=8, label='Forecast')
+    # Plot confidence interval as filled area
+    fig.add_trace(go.Scatter(
+        x=forecasts['year'].tolist() + forecasts['year'][::-1].tolist(),
+        y=forecasts['upper_ci'].tolist() + forecasts['lower_ci'][::-1].tolist(),
+        fill='toself',
+        fillcolor='rgba(255, 0, 0, 0.3)',
+        line=dict(color='rgba(255,255,255,0)'),
+        showlegend=True,
+        name='Confidence Interval'
+    ))
 
-    # Plot confidence intervals
-    plt.fill_between(forecasts['year'], forecasts['lower_ci'], forecasts['upper_ci'], 
-                    alpha=0.3, color='red', label='Confidence Interval')
+    # Add vertical lines
+    fig.add_vline(x=2018.5, line=dict(dash='dash', color='orange'), annotation_text="Trade War Start", annotation_position="top left")
+    fig.add_vline(x=2024.5, line=dict(dash='dash', color='gray'), annotation_text="Forecast Start", annotation_position="top left")
 
-    # Add vertical line for forecast start
-    plt.axvline(x=2024.5, color='gray', linestyle='--', alpha=0.7, label='Forecast Start')
-
-    # Add trade war start line
-    plt.axvline(x=2018.5, color='orange', linestyle='--', alpha=0.7, label='Trade War Start')
-
-    plt.title('US-China Electronics Trade Forecast (Time Series Model)', fontsize=14, fontweight='bold')
-    plt.xlabel('Year', fontsize=12)
-    plt.ylabel('Imports from China (Billions USD)', fontsize=12)
-    plt.legend(fontsize=10)
-    plt.grid(True, alpha=0.3)
-
-    # Annotations
+    # Add annotations for forecast points
     for i, row in forecasts.iterrows():
-        plt.annotate(f'${row["forecast"]:.1f}B', 
-                    xy=(row['year'], row['forecast']), 
-                    xytext=(5, 5), textcoords='offset points',
-                    fontsize=9, fontweight='bold')
+        fig.add_annotation(
+            x=row['year'],
+            y=row['forecast'],
+            text=f"${row['forecast']:.1f}B",
+            showarrow=True,
+            arrowhead=1,
+            ax=20,
+            ay=-20,
+            font=dict(size=10, color='black')
+        )
 
-    plt.tight_layout()
-    plt.savefig('time_series_forecast.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    # Update layout
+    fig.update_layout(
+        title='US-China Electronics Trade Forecast (Time Series Model)',
+        xaxis_title='Year',
+        yaxis_title='Imports from China (Billions USD)',
+        legend=dict(font=dict(size=10)),
+        margin=dict(l=30, r=30, t=50, b=30),
+        height=600,
+        template='plotly_white'
+    )
+
+    # Streamlit display
+    st.plotly_chart(fig, use_container_width=True)
 
     # Calculate forecast insights
     # Compare with historical trends
@@ -1088,33 +1174,68 @@ def show():
         ('Germany', 'China')
     ]
 
-    fig, axes = plt.subplots(2, 3, figsize=(18, 12))
-    axes = axes.flatten()
+    # Define consistent colors
+    status_quo_color = 'blue'
+    tariff_escalation_color = 'red'
 
+    # Setup subplot grid (2 rows x 3 columns)
+    fig = make_subplots(
+        rows=2, cols=3,
+        subplot_titles=[f'{c1} → {c2}' for c1, c2 in key_pairs],
+        horizontal_spacing=0.1,
+        vertical_spacing=0.15
+    )
+
+    # Track which legends were already added
+    shown_legends = {'Status Quo': False, 'Tariff Escalation': False}
+
+    # Flatten subplot indexing
     for i, (c1, c2) in enumerate(key_pairs):
-        ax = axes[i]
-        
-        # Plot both scenarios
-        for scenario_name, scenario_data in scenario_predictions.items():
+        row = i // 3 + 1
+        col = i % 3 + 1
+
+        for j, (scenario_name, scenario_data) in enumerate(scenario_predictions.items()):
             pair_data = scenario_data[
                 (scenario_data['country1'] == c1) & 
                 (scenario_data['country2'] == c2)
             ]
             
             if not pair_data.empty:
-                ax.plot(pair_data['year'], pair_data['predicted_trade_intensity'], 
-                    'o-', linewidth=2, markersize=6, label=scenario_name)
-        
-        ax.set_title(f'{c1} → {c2}', fontweight='bold')
-        ax.set_xlabel('Year')
-        ax.set_ylabel('Trade Intensity')
-        ax.legend()
-        ax.grid(True, alpha=0.3)
+                # Alternate colors: even = status quo, odd = tariff escalation
+                is_even = j % 2 == 0
+                color = status_quo_color if is_even else tariff_escalation_color
+                legend_name = 'Status Quo' if is_even else 'Tariff Escalation'
 
-    plt.suptitle('Multi-Country Trade Predictions: Scenario Comparison', fontsize=16, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig('multicountry_scenario_predictions.png', dpi=300, bbox_inches='tight')
-    plt.show()
+                show_legend = not shown_legends[legend_name]
+                shown_legends[legend_name] = True
+
+                fig.add_trace(go.Scatter(
+                    x=pair_data['year'],
+                    y=pair_data['predicted_trade_intensity'],
+                    mode='lines+markers',
+                    name=legend_name if show_legend else None,
+                    legendgroup=legend_name,
+                    line=dict(color=color),
+                    marker=dict(color=color),
+                    showlegend=show_legend
+                ), row=row, col=col)
+
+        # Customize axes
+        fig.update_xaxes(title_text="Year", row=row, col=col)
+        fig.update_yaxes(title_text="Trade Intensity", row=row, col=col)
+
+    # Final layout
+    fig.update_layout(
+        height=700,
+        width=1100,
+        title_text="Multi-Country Trade Predictions: Scenario Comparison",
+        showlegend=True,
+        template='plotly_white',
+        margin=dict(t=80, b=50, l=50, r=50)
+    )
+
+    # Display in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
     # Summary statistics by scenario
 
@@ -1256,44 +1377,45 @@ def show():
         for idx, (_, row) in enumerate(top_features.iterrows(), 1):
             print(f"   {idx}. {row['feature']}: {row['importance']:.3f}")
 
-    # Create model interpretation visualization
-    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    # Create 2x2 subplot layout
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=[
+            "Feature Importance (Top 8)",
+            "Average Trade Intensity by Scenario",
+            "US-China Trade Intensity by Scenario",
+            "Model Performance Comparison (Training R²)"
+        ],
+        vertical_spacing=0.2,
+        horizontal_spacing=0.1
+    )
 
-    # Plot 1: Feature Importance (if available)
+    # Plot 1: Feature Importance
     if hasattr(best_model, 'feature_importances_'):
-        ax1 = axes[0, 0]
-        top_features = feature_importance.head(8)
-        
-        bars = ax1.barh(range(len(top_features)), top_features['importance'])
-        ax1.set_yticks(range(len(top_features)))
-        ax1.set_yticklabels(top_features['feature'], fontsize=9)
-        ax1.set_xlabel('Importance')
-        ax1.set_title('Feature Importance (Top 8)', fontweight='bold')
-        ax1.grid(True, alpha=0.3)
-        
-        # Add value labels
-        for i, bar in enumerate(bars):
-            ax1.text(bar.get_width() + 0.001, bar.get_y() + bar.get_height()/2, 
-                    f'{top_features.iloc[i]["importance"]:.3f}', 
-                    va='center', fontsize=8)
+        top_features = feature_importance.head(8).sort_values('importance')
+        fig.add_trace(go.Bar(
+            x=top_features['importance'],
+            y=top_features['feature'],
+            orientation='h',
+            text=top_features['importance'].round(3),
+            textposition='auto',
+            marker_color='lightskyblue',
+            name='Feature Importance'
+        ), row=1, col=1)
 
     # Plot 2: Scenario Impact Comparison
-    ax2 = axes[0, 1]
     scenarios = list(scenario_predictions.keys())
     avg_intensities = [df['predicted_trade_intensity'].mean() for df in scenario_predictions.values()]
-
-    bars = ax2.bar(scenarios, avg_intensities, color=['skyblue', 'lightcoral'], alpha=0.8)
-    ax2.set_title('Average Trade Intensity by Scenario', fontweight='bold')
-    ax2.set_ylabel('Trade Intensity')
-    ax2.grid(True, alpha=0.3)
-
-    # Add value labels on bars
-    for bar, value in zip(bars, avg_intensities):
-        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, 
-                f'{value:.2f}', ha='center', va='bottom', fontweight='bold')
+    fig.add_trace(go.Bar(
+        x=scenarios,
+        y=avg_intensities,
+        text=[f"{v:.2f}" for v in avg_intensities],
+        textposition='outside',
+        marker_color=['skyblue', 'lightcoral'],
+        name='Scenario Impact'
+    ), row=1, col=2)
 
     # Plot 3: US-China Trade Focus
-    ax3 = axes[1, 0]
     us_china_scenarios = []
     us_china_values = []
 
@@ -1302,52 +1424,60 @@ def show():
             ((scenario_data['country1'] == 'United States') & (scenario_data['country2'] == 'China')) |
             ((scenario_data['country1'] == 'China') & (scenario_data['country2'] == 'United States'))
         ]
-        
         if not us_china_data.empty:
             us_china_scenarios.append(scenario_name)
             us_china_values.append(us_china_data['predicted_trade_intensity'].mean())
 
-    bars = ax3.bar(us_china_scenarios, us_china_values, color=['green', 'red'], alpha=0.8)
-    ax3.set_title('US-China Trade Intensity by Scenario', fontweight='bold')
-    ax3.set_ylabel('Trade Intensity')
-    ax3.grid(True, alpha=0.3)
+    fig.add_trace(go.Bar(
+        x=us_china_scenarios,
+        y=us_china_values,
+        text=[f"{v:.2f}" for v in us_china_values],
+        textposition='outside',
+        marker_color=['green', 'red'],
+        name='US-China Focus'
+    ), row=2, col=1)
 
-    # Add value labels and impact percentage
-    for i, (bar, value) in enumerate(zip(bars, us_china_values)):
-        ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, 
-                f'{value:.2f}', ha='center', va='bottom', fontweight='bold')
-
+    # Annotate impact if two values exist
     if len(us_china_values) == 2:
         impact = ((us_china_values[1] - us_china_values[0]) / us_china_values[0]) * 100
-        ax3.text(0.5, max(us_china_values) * 0.8, f'Impact: {impact:+.1f}%', 
-                ha='center', transform=ax3.transData, fontsize=12, fontweight='bold',
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.7))
+        fig.add_annotation(
+            text=f"Impact: {impact:+.1f}%",
+            xref='paper', yref='paper',
+            x=0.25, y=0.3,
+            showarrow=False,
+            font=dict(size=12, color="black"),
+            bgcolor="yellow",
+            opacity=0.8
+        )
 
-    # Plot 4: Model Performance Comparison
-    ax4 = axes[1, 1]
+    # Plot 4: Model Performance
     model_names = list(model_results.keys())
     train_scores = [results['train_r2'] for results in model_results.values()]
-
-    bars = ax4.bar(model_names, train_scores, color='lightgreen', alpha=0.8)
-    ax4.set_title('Model Performance Comparison (Training R²)', fontweight='bold')
-    ax4.set_ylabel('R² Score')
-    ax4.set_xticklabels(model_names, rotation=45, ha='right')
-    ax4.grid(True, alpha=0.3)
-
-    # Add value labels
-    for bar, score in zip(bars, train_scores):
-        ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01, 
-                f'{score:.3f}', ha='center', va='bottom', fontweight='bold', fontsize=9)
-
-    # Highlight best model
+    colors = ['lightgreen'] * len(model_names)
     best_idx = model_names.index(best_model_name)
-    bars[best_idx].set_color('gold')
-    bars[best_idx].set_edgecolor('black')
-    bars[best_idx].set_linewidth(2)
+    colors[best_idx] = 'gold'
 
-    plt.tight_layout()
-    plt.savefig('multicountry_model_analysis.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    fig.add_trace(go.Bar(
+        x=model_names,
+        y=train_scores,
+        text=[f"{s:.3f}" for s in train_scores],
+        textposition='outside',
+        marker_color=colors,
+        name='Model R²'
+    ), row=2, col=2)
+
+    # Final layout
+    fig.update_layout(
+        height=800,
+        width=1000,
+        showlegend=False,
+        title_text="Model Interpretation Dashboard",
+        template="plotly_white",
+        margin=dict(t=80, b=40, l=40, r=40)
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
 
     # # Final summary and insights
     # print(f"\n💡 KEY INSIGHTS FROM MULTI-COUNTRY MODEL:")
@@ -1381,9 +1511,9 @@ def show():
         'forecast_years': forecast_years
     }
 
-    import json
-    with open('multicountry_model_summary.json', 'w') as f:
-        json.dump(comprehensive_results, f, indent=2, default=str)
+    # import json
+    # with open('multicountry_model_summary.json', 'w') as f:
+    #     json.dump(comprehensive_results, f, indent=2, default=str)
 
     # print(f"\n💾 COMPREHENSIVE RESULTS SAVED:")
     # print(f"   📊 Model analysis: Data/Result/multicountry_model_analysis.png")
@@ -1402,9 +1532,9 @@ def show():
     # BLOCK 6: Model 3 - Economic Impact Prediction
     # Vector Autoregression (VAR) and ML models for economic indicator forecasting
 
-    print("\n" + "="*60)
-    print("MODEL 3: ECONOMIC IMPACT PREDICTION")
-    print("="*60)
+    # print("\n" + "="*60)
+    # print("MODEL 3: ECONOMIC IMPACT PREDICTION")
+    # print("="*60)
 
     # Load economic data from Q4 analysis
     try:
@@ -1415,7 +1545,7 @@ def show():
         economic_data = pd.read_csv('data/enhanced_modeling_dataset.csv')
 
     # Prepare economic indicators for modeling
-    print(f"\n📊 Preparing Economic Indicators for Impact Analysis...")
+    # print(f"\n📊 Preparing Economic Indicators for Impact Analysis...")
 
     # Clean and process data
     economic_data.replace('..', np.nan, inplace=True)
@@ -1509,7 +1639,7 @@ def show():
     econ_df[numeric_cols] = econ_df[numeric_cols].fillna(method='ffill').fillna(method='bfill')
 
     # Create lagged variables for economic feedback analysis
-    print(f"\n📈 Creating Economic Feedback Variables...")
+    # print(f"\n📈 Creating Economic Feedback Variables...")
 
     # Define key variables for VAR-style analysis
     if 'us_GDP_growth' in econ_df.columns:
@@ -1531,7 +1661,7 @@ def show():
             econ_df[f'{col}_lag2'] = econ_df[col].shift(2)
 
     # Create economic shock indicators
-    print(f"\n💥 Creating Economic Shock Indicators...")
+    # print(f"\n💥 Creating Economic Shock Indicators...")
 
     # Tariff shock (sudden increase)
     if any('tariff' in col.lower() for col in econ_df.columns):
@@ -1550,10 +1680,10 @@ def show():
         econ_df[f'{gdp_col}_boom'] = (econ_df[gdp_col] > 5).astype(int)
 
     # Build economic impact models
-    print(f"\n🤖 Building Economic Impact Models...")
+    # print(f"\n🤖 Building Economic Impact Models...")
 
     # Model 3A: GDP Growth Prediction
-    print(f"\n   Model 3A: GDP Growth Impact...")
+    # print(f"\n   Model 3A: GDP Growth Impact...")
 
     # Select features for GDP prediction
     gdp_target_cols = [col for col in econ_df.columns if 'gdp' in col.lower() and 'lag' not in col and 'shock' not in col]
@@ -1733,7 +1863,7 @@ def show():
         economic_forecasts[scenario_name] = pd.DataFrame(scenario_predictions)
 
     # Display economic impact results
-    print(f"\n📊 ECONOMIC IMPACT FORECAST RESULTS:")
+    # print(f"\n📊 ECONOMIC IMPACT FORECAST RESULTS:")
 
     for scenario_name, forecast_df in economic_forecasts.items():
         print(f"\n   {scenario_name.upper()}:")
@@ -1752,106 +1882,156 @@ def show():
             print(f"     Average unemployment: Not available")
 
     # Create economic impact visualization
-    print(f"\n📈 Creating Economic Impact Visualization...")
-
-    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    # print(f"\n📈 Creating Economic Impact Visualization...")
+    # Create subplot structure
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=[
+            "GDP Growth Impact by Scenario",
+            "Unemployment Impact by Scenario",
+            "Economic Trade-offs: GDP vs Unemployment",
+            "Economic Impact Summary (vs Baseline)"
+        ],
+        vertical_spacing=0.15,
+        horizontal_spacing=0.12,
+        specs=[[{}, {}], [{}, {"secondary_y": True}]]  
+    )
 
     # Plot 1: GDP Growth Scenarios
-    ax1 = axes[0, 0]
     for scenario_name, forecast_df in economic_forecasts.items():
         if not forecast_df['predicted_gdp_growth'].isna().all():
-            ax1.plot(forecast_df['year'], forecast_df['predicted_gdp_growth'], 
-                    'o-', linewidth=2, markersize=6, label=scenario_name)
-
-    ax1.set_title('GDP Growth Impact by Scenario', fontweight='bold')
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('GDP Growth (%)')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-    ax1.axhline(y=0, color='black', linestyle='-', alpha=0.3)
+            fig.add_trace(go.Scatter(
+                x=forecast_df['year'],
+                y=forecast_df['predicted_gdp_growth'],
+                mode='lines+markers',
+                name=scenario_name,
+                legendgroup=scenario_name,
+                showlegend=True
+            ), row=1, col=1)
 
     # Plot 2: Unemployment Scenarios
-    ax2 = axes[0, 1]
     for scenario_name, forecast_df in economic_forecasts.items():
         if not forecast_df['predicted_unemployment'].isna().all():
-            ax2.plot(forecast_df['year'], forecast_df['predicted_unemployment'], 
-                    's-', linewidth=2, markersize=6, label=scenario_name)
+            fig.add_trace(go.Scatter(
+                x=forecast_df['year'],
+                y=forecast_df['predicted_unemployment'],
+                mode='lines+markers',
+                name=scenario_name,
+                legendgroup=scenario_name,
+                showlegend=True
+            ), row=1, col=2)
 
-    ax2.set_title('Unemployment Impact by Scenario', fontweight='bold')
-    ax2.set_xlabel('Year')
-    ax2.set_ylabel('Unemployment Rate (%)')
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
-
-    # Plot 3: Scenario Comparison (GDP vs Unemployment)
-    ax3 = axes[1, 0]
+    # Plot 3: GDP vs Unemployment
     for scenario_name, forecast_df in economic_forecasts.items():
         if not forecast_df['predicted_gdp_growth'].isna().all() and not forecast_df['predicted_unemployment'].isna().all():
             avg_gdp = forecast_df['predicted_gdp_growth'].mean()
-            avg_unemployment = forecast_df['predicted_unemployment'].mean()
-            ax3.scatter(avg_gdp, avg_unemployment, s=100, label=scenario_name)
-            ax3.annotate(scenario_name, (avg_gdp, avg_unemployment), 
-                        xytext=(5, 5), textcoords='offset points', fontsize=9)
+            avg_unemp = forecast_df['predicted_unemployment'].mean()
+            fig.add_trace(go.Scatter(
+                x=[avg_gdp],
+                y=[avg_unemp],
+                mode='markers+text',
+                text=[scenario_name],
+                textposition='top center',
+                marker=dict(size=12),
+                name=scenario_name,
+                showlegend=False
+            ), row=2, col=1)
 
-    ax3.set_title('Economic Trade-offs: GDP vs Unemployment', fontweight='bold')
-    ax3.set_xlabel('Average GDP Growth (%)')
-    ax3.set_ylabel('Average Unemployment (%)')
-    ax3.grid(True, alpha=0.3)
-
-    # Plot 4: Tariff Impact Summary
-    ax4 = axes[1, 1]
+    # Plot 4: Economic Impact Summary (Bar with dual y-axis)
     tariff_changes = []
     gdp_impacts = []
     unemployment_impacts = []
     scenario_names = []
 
     baseline_gdp = economic_forecasts['Baseline']['predicted_gdp_growth'].mean() if not economic_forecasts['Baseline']['predicted_gdp_growth'].isna().all() else 0
-    baseline_unemployment = economic_forecasts['Baseline']['predicted_unemployment'].mean() if not economic_forecasts['Baseline']['predicted_unemployment'].isna().all() else 5
+    baseline_unemp = economic_forecasts['Baseline']['predicted_unemployment'].mean() if not economic_forecasts['Baseline']['predicted_unemployment'].isna().all() else 5
 
     for scenario_name, scenario_config in scenarios.items():
         if scenario_name != 'Baseline':
             forecast_df = economic_forecasts[scenario_name]
-            
             tariff_change = scenario_config['tariff_change']
             gdp_impact = forecast_df['predicted_gdp_growth'].mean() - baseline_gdp if not forecast_df['predicted_gdp_growth'].isna().all() else 0
-            unemployment_impact = forecast_df['predicted_unemployment'].mean() - baseline_unemployment if not forecast_df['predicted_unemployment'].isna().all() else 0
-            
+            unemp_impact = forecast_df['predicted_unemployment'].mean() - baseline_unemp if not forecast_df['predicted_unemployment'].isna().all() else 0
             tariff_changes.append(tariff_change)
             gdp_impacts.append(gdp_impact)
-            unemployment_impacts.append(unemployment_impact)
+            unemployment_impacts.append(unemp_impact)
             scenario_names.append(scenario_name)
 
-    if len(tariff_changes) > 0:
-        # Dual y-axis plot
-        ax4_twin = ax4.twinx()
-        
-        bars1 = ax4.bar([i - 0.2 for i in range(len(scenario_names))], gdp_impacts, 
-                        width=0.4, label='GDP Impact', alpha=0.7, color='blue')
-        bars2 = ax4_twin.bar([i + 0.2 for i in range(len(scenario_names))], unemployment_impacts, 
-                            width=0.4, label='Unemployment Impact', alpha=0.7, color='red')
-        
-        ax4.set_xlabel('Scenario')
-        ax4.set_ylabel('GDP Growth Impact (%)', color='blue')
-        ax4_twin.set_ylabel('Unemployment Impact (%)', color='red')
-        ax4.set_title('Economic Impact Summary', fontweight='bold')
-        ax4.set_xticks(range(len(scenario_names)))
-        ax4.set_xticklabels(scenario_names, rotation=45)
-        ax4.grid(True, alpha=0.3)
-        
-        # Add value labels on bars
-        for i, (gdp_val, unemp_val) in enumerate(zip(gdp_impacts, unemployment_impacts)):
-            ax4.text(i - 0.2, gdp_val + 0.01, f'{gdp_val:+.2f}', ha='center', va='bottom', fontsize=8)
-            ax4_twin.text(i + 0.2, unemp_val + 0.01, f'{unemp_val:+.2f}', ha='center', va='bottom', fontsize=8)
+    # ✅ Add bar traces with manual offset
+    if scenario_names:
+        x = np.arange(len(scenario_names))
+        bar_width = 0.75
 
-    plt.tight_layout()
-    plt.savefig('economic_impact_scenarios.png', dpi=300, bbox_inches='tight')
-    plt.show()
+        # GDP Impact Bars (left)
+        fig.add_trace(go.Bar(
+            x=x - bar_width / 2,
+            y=gdp_impacts,
+            name='GDP Impact (%)',
+            marker_color='blue'
+        ), row=2, col=2, secondary_y=False)
+
+        # Unemployment Impact Bars (right)
+        fig.add_trace(go.Bar(
+            x=x + bar_width / 2,
+            y=unemployment_impacts,
+            name='Unemployment Impact (%)',
+            marker_color='red'
+        ), row=2, col=2, secondary_y=True)
+
+        # Label the x-axis ticks
+        fig.update_xaxes(
+            tickvals=x,
+            ticktext=scenario_names,
+            row=2, col=2
+        )
+
+    # Layout
+    fig.update_layout(
+        height=850,
+        width=1000,
+        title_text="Economic Scenario Dashboard",
+        template="plotly_white",
+        barmode='overlay',  # overlay mode since we control positioning manually
+        bargap=0.25,
+        margin=dict(t=90, b=50, l=60, r=60),
+        legend=dict(x=1.05, y=1)
+    )
+
+    # Dual y-axes setup
+    fig.update_yaxes(
+        title_text="GDP Impact (%)",
+        tickfont=dict(color="blue"),
+        row=2, col=2, secondary_y=False
+    )
+
+    fig.update_yaxes(
+        title_text="Unemployment Impact (%)",
+        tickfont=dict(color="red"),
+        side="right",
+        row=2, col=2, secondary_y=True
+    )
+
+
+    # Layout
+    fig.update_layout(
+        height=850,
+        width=1000,
+        title_text="Economic Scenario Dashboard",
+        template="plotly_white",
+        barmode='group',
+        bargap=0.25, 
+        margin=dict(t=90, b=50, l=60, r=60),
+        legend=dict(x=1.05, y=1)
+    )
+
+    # Show plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
     # Calculate economic impact elasticities
-    print(f"\n📊 ECONOMIC IMPACT ELASTICITIES:")
+    # print(f"\n📊 ECONOMIC IMPACT ELASTICITIES:")
 
     if len(tariff_changes) > 0 and len(gdp_impacts) > 0:
-        print(f"\n   Tariff-GDP Elasticity Analysis:")
+        # print(f"\n   Tariff-GDP Elasticity Analysis:")
         for i, scenario_name in enumerate(scenario_names):
             tariff_change = tariff_changes[i]
             gdp_impact = gdp_impacts[i]
@@ -1860,7 +2040,7 @@ def show():
                 elasticity = gdp_impact / tariff_change
                 print(f"     {scenario_name}: {elasticity:.3f} GDP points per tariff point")
         
-        print(f"\n   Tariff-Unemployment Elasticity Analysis:")
+        # print(f"\n   Tariff-Unemployment Elasticity Analysis:")
         for i, scenario_name in enumerate(scenario_names):
             tariff_change = tariff_changes[i]
             unemployment_impact = unemployment_impacts[i]
@@ -1870,9 +2050,9 @@ def show():
                 print(f"     {scenario_name}: {elasticity:.3f} unemployment points per tariff point")
 
     # Policy implications
-    print(f"\n💡 POLICY IMPLICATIONS:")
+    # print(f"\n💡 POLICY IMPLICATIONS:")
 
-    print(f"\n   Economic Trade-offs:")
+    # print(f"\n   Economic Trade-offs:")
     if len(gdp_impacts) > 0 and len(unemployment_impacts) > 0:
         for i, scenario_name in enumerate(scenario_names):
             gdp_effect = "positive" if gdp_impacts[i] > 0 else "negative" if gdp_impacts[i] < 0 else "neutral"
@@ -1880,13 +2060,13 @@ def show():
             
             print(f"     {scenario_name}: {gdp_effect} GDP impact, {unemployment_effect} unemployment")
 
-    print(f"\n   Key Insights:")
-    print(f"     • Higher tariffs may protect jobs but could hurt overall economic growth")
-    print(f"     • Economic impacts vary by country and depend on trade dependencies")
-    print(f"     • Short-term adjustment costs may differ from long-term equilibrium effects")
+    # print(f"\n   Key Insights:")
+    # print(f"     • Higher tariffs may protect jobs but could hurt overall economic growth")
+    # print(f"     • Economic impacts vary by country and depend on trade dependencies")
+    # print(f"     • Short-term adjustment costs may differ from long-term equilibrium effects")
 
-    # Create summary table
-    print(f"\n📋 ECONOMIC IMPACT SUMMARY TABLE:")
+    # # Create summary table
+    # print(f"\n📋 ECONOMIC IMPACT SUMMARY TABLE:")
 
     summary_data = []
     for scenario_name, forecast_df in economic_forecasts.items():
@@ -1911,12 +2091,12 @@ def show():
         forecast_df.to_csv("data/"+f"{filename}", index=False)
 
     summary_df.to_csv('data/economic_impact_summary.csv', index=False)
-    print(f"\n💾 Economic impact results saved:")
-    print(f"   • Individual scenarios: economic_impact_[scenario].csv")
-    print(f"   • Summary table: economic_impact_summary.csv")
+    # print(f"\n💾 Economic impact results saved:")
+    # print(f"   • Individual scenarios: economic_impact_[scenario].csv")
+    # print(f"   • Summary table: economic_impact_summary.csv")
 
     # Model validation and diagnostics
-    print(f"\n🔍 MODEL VALIDATION AND DIAGNOSTICS:")
+    # print(f"\n🔍 MODEL VALIDATION AND DIAGNOSTICS:")
 
     if len(gdp_results) > 0:
         print(f"\n   GDP Model Performance:")
@@ -1934,15 +2114,15 @@ def show():
             print(f"       R²: {results['r2']:.3f}")
 
     # Confidence intervals and uncertainty
-    print(f"\n📊 UNCERTAINTY ANALYSIS:")
+    # print(f"\n📊 UNCERTAINTY ANALYSIS:")
 
-    print(f"   Model Limitations:")
-    print(f"     • Small sample size limits prediction reliability")
-    print(f"     • Economic relationships may change over time")
-    print(f"     • External shocks (COVID, geopolitical events) not fully captured")
-    print(f"     • Linear models may not capture complex economic dynamics")
+    # print(f"   Model Limitations:")
+    # print(f"     • Small sample size limits prediction reliability")
+    # print(f"     • Economic relationships may change over time")
+    # print(f"     • External shocks (COVID, geopolitical events) not fully captured")
+    # print(f"     • Linear models may not capture complex economic dynamics")
 
-    print(f"\n   Prediction Confidence:")
+    # print(f"\n   Prediction Confidence:")
     if len(gdp_results) > 0:
         best_gdp_r2 = max([results['train_r2'] for results in gdp_results.values()])
         confidence_level = "High" if best_gdp_r2 > 0.8 else "Medium" if best_gdp_r2 > 0.5 else "Low"
@@ -1953,11 +2133,11 @@ def show():
         confidence_level = "High" if best_unemp_r2 > 0.8 else "Medium" if best_unemp_r2 > 0.5 else "Low"
         print(f"     Unemployment predictions: {confidence_level} confidence (R² = {best_unemp_r2:.3f})")
 
-    print(f"\n✅ Economic Impact Model (Model 3) completed successfully!")
-    print(f"   Economic indicators analyzed: GDP growth, unemployment")
-    print(f"   Scenarios generated: {len(scenarios)} policy scenarios")
-    print(f"   Forecast period: 2025-2027")
-    print(f"   Key insight: Tariff policies involve trade-offs between growth and employment")
+    # print(f"\n✅ Economic Impact Model (Model 3) completed successfully!")
+    # print(f"   Economic indicators analyzed: GDP growth, unemployment")
+    # print(f"   Scenarios generated: {len(scenarios)} policy scenarios")
+    # print(f"   Forecast period: 2025-2027")
+    # print(f"   Key insight: Tariff policies involve trade-offs between growth and employment")
 
     # BLOCK 7: Model 4 - Ensemble Model & Final Integration
     # Combines all previous models + sentiment analysis for comprehensive predictions
@@ -2039,96 +2219,96 @@ def show():
     for scenario_name, scenario_config in ensemble_scenarios.items():
         print(f"\n   Processing {scenario_name} scenario...")
         
-    scenario_forecasts = []
+        scenario_forecasts = []
         
-    for year in forecast_years:
-        # Get base trade forecast from Model 1 (Time Series)
-        ts_forecast_row = ts_forecasts[ts_forecasts['year'] == year]
-        if not ts_forecast_row.empty:
-            base_trade_forecast = ts_forecast_row['forecast'].iloc[0]
-            trade_ci_lower = ts_forecast_row['lower_ci'].iloc[0]
-            trade_ci_upper = ts_forecast_row['upper_ci'].iloc[0]
-        else:
-            # Fallback calculation
-            base_trade_forecast = 300 + (year - 2025) * 10
-            trade_ci_lower = base_trade_forecast * 0.9
-            trade_ci_upper = base_trade_forecast * 1.1
+        for year in forecast_years:
+            # Get base trade forecast from Model 1 (Time Series)
+            ts_forecast_row = ts_forecasts[ts_forecasts['year'] == year]
+            if not ts_forecast_row.empty:
+                base_trade_forecast = ts_forecast_row['forecast'].iloc[0]
+                trade_ci_lower = ts_forecast_row['lower_ci'].iloc[0]
+                trade_ci_upper = ts_forecast_row['upper_ci'].iloc[0]
+            else:
+                # Fallback calculation
+                base_trade_forecast = 300 + (year - 2025) * 10
+                trade_ci_lower = base_trade_forecast * 0.9
+                trade_ci_upper = base_trade_forecast * 1.1
         
-        # Adjust based on multi-country model (Model 2)
-        # Get trade intensity impact
-        mc_baseline = mc_status_quo[mc_status_quo['year'] == year]['predicted_trade_intensity'].mean() if not mc_status_quo.empty else 10
+            # Adjust based on multi-country model (Model 2)
+            # Get trade intensity impact
+            mc_baseline = mc_status_quo[mc_status_quo['year'] == year]['predicted_trade_intensity'].mean() if not mc_status_quo.empty else 10
         
-        if scenario_config['tariff_change'] > 0:
-            # Use escalation scenario
-            mc_scenario = mc_escalation[mc_escalation['year'] == year]['predicted_trade_intensity'].mean() if not mc_escalation.empty else 8
-        else:
-            # Use status quo or better
-            mc_scenario = mc_baseline * (1 + abs(scenario_config['tariff_change']) * 0.05)
+            if scenario_config['tariff_change'] > 0:
+                # Use escalation scenario
+                mc_scenario = mc_escalation[mc_escalation['year'] == year]['predicted_trade_intensity'].mean() if not mc_escalation.empty else 8
+            else:
+                # Use status quo or better
+                mc_scenario = mc_baseline * (1 + abs(scenario_config['tariff_change']) * 0.05)
         
-        # Multi-country adjustment factor
-        mc_adjustment = mc_scenario / mc_baseline if mc_baseline > 0 else 1.0
+            # Multi-country adjustment factor
+            mc_adjustment = mc_scenario / mc_baseline if mc_baseline > 0 else 1.0
         
-        # Adjust based on economic impact (Model 3)
-        # Find matching economic scenario
-        if scenario_config['tariff_change'] > 0:
-            econ_scenario = econ_summary[econ_summary['Scenario'] == 'Tariff Increase']
-        elif scenario_config['tariff_change'] < 0:
-            econ_scenario = econ_summary[econ_summary['Scenario'] == 'Tariff Decrease']
-        else:
-            econ_scenario = econ_summary[econ_summary['Scenario'] == 'Baseline']
+            # Adjust based on economic impact (Model 3)
+            # Find matching economic scenario
+            if scenario_config['tariff_change'] > 0:
+                econ_scenario = econ_summary[econ_summary['Scenario'] == 'Tariff Increase']
+            elif scenario_config['tariff_change'] < 0:
+                econ_scenario = econ_summary[econ_summary['Scenario'] == 'Tariff Decrease']
+            else:
+                econ_scenario = econ_summary[econ_summary['Scenario'] == 'Baseline']
         
-        if not econ_scenario.empty and not np.isnan(econ_scenario['Avg_GDP_Growth'].iloc[0]):
-            gdp_impact = econ_scenario['Avg_GDP_Growth'].iloc[0]
-            # Convert GDP impact to trade multiplier (1% GDP ≈ 2% trade impact)
-            econ_multiplier = 1 + (gdp_impact - 2.5) * 0.02
-        else:
-            econ_multiplier = scenario_config['economic_multiplier']
+            if not econ_scenario.empty and not np.isnan(econ_scenario['Avg_GDP_Growth'].iloc[0]):
+                gdp_impact = econ_scenario['Avg_GDP_Growth'].iloc[0]
+                # Convert GDP impact to trade multiplier (1% GDP ≈ 2% trade impact)
+                econ_multiplier = 1 + (gdp_impact - 2.5) * 0.02
+            else:
+                econ_multiplier = scenario_config['economic_multiplier']
         
-        # Sentiment adjustment (Model 4 - new component)
-        # Sentiment affects confidence and risk premium
-        sentiment_score = overall_sentiment + scenario_config['sentiment_adjustment']
+            # Sentiment adjustment (Model 4 - new component)
+            # Sentiment affects confidence and risk premium
+            sentiment_score = overall_sentiment + scenario_config['sentiment_adjustment']
         
-        # Sentiment multiplier: positive sentiment increases trade, negative decreases
-        sentiment_multiplier = 1 + sentiment_score * 0.1
+            # Sentiment multiplier: positive sentiment increases trade, negative decreases
+            sentiment_multiplier = 1 + sentiment_score * 0.1
         
-        # Risk adjustment based on sentiment volatility
-        risk_premium = sentiment_volatility * 0.05  # Higher volatility = higher uncertainty
+            # Risk adjustment based on sentiment volatility
+            risk_premium = sentiment_volatility * 0.05  # Higher volatility = higher uncertainty
         
-        # Combine all model predictions
-        ensemble_forecast = (base_trade_forecast * 
-                        mc_adjustment * 
-                        econ_multiplier * 
-                        sentiment_multiplier)
+            # Combine all model predictions
+            ensemble_forecast = (base_trade_forecast * 
+                            mc_adjustment * 
+                            econ_multiplier * 
+                            sentiment_multiplier)
         
-        # Adjust confidence intervals based on risk
-        ensemble_ci_lower = trade_ci_lower * mc_adjustment * econ_multiplier * sentiment_multiplier * (1 - risk_premium)
-        ensemble_ci_upper = trade_ci_upper * mc_adjustment * econ_multiplier * sentiment_multiplier * (1 + risk_premium)
+            # Adjust confidence intervals based on risk
+            ensemble_ci_lower = trade_ci_lower * mc_adjustment * econ_multiplier * sentiment_multiplier * (1 - risk_premium)
+            ensemble_ci_upper = trade_ci_upper * mc_adjustment * econ_multiplier * sentiment_multiplier * (1 + risk_premium)
         
-        # Calculate component contributions for transparency
-        base_contribution = base_trade_forecast
-        mc_contribution = (mc_adjustment - 1) * base_trade_forecast
-        econ_contribution = (econ_multiplier - 1) * base_trade_forecast * mc_adjustment
-        sentiment_contribution = (sentiment_multiplier - 1) * base_trade_forecast * mc_adjustment * econ_multiplier
+            # Calculate component contributions for transparency
+            base_contribution = base_trade_forecast
+            mc_contribution = (mc_adjustment - 1) * base_trade_forecast
+            econ_contribution = (econ_multiplier - 1) * base_trade_forecast * mc_adjustment
+            sentiment_contribution = (sentiment_multiplier - 1) * base_trade_forecast * mc_adjustment * econ_multiplier
         
-        scenario_forecasts.append({
-            'year': year,
-            'scenario': scenario_name,
-            'ensemble_forecast': ensemble_forecast,
-            'lower_ci': ensemble_ci_lower,
-            'upper_ci': ensemble_ci_upper,
-            'base_forecast': base_contribution,
-            'multicountry_impact': mc_contribution,
-            'economic_impact': econ_contribution,
-            'sentiment_impact': sentiment_contribution,
-            'probability': scenario_config['probability'],
-            'description': scenario_config['description'],
-            'sentiment_score': sentiment_score,
-            'risk_premium': risk_premium
-        })
+            scenario_forecasts.append({
+                'year': year,
+                'scenario': scenario_name,
+                'ensemble_forecast': ensemble_forecast,
+                'lower_ci': ensemble_ci_lower,
+                'upper_ci': ensemble_ci_upper,
+                'base_forecast': base_contribution,
+                'multicountry_impact': mc_contribution,
+                'economic_impact': econ_contribution,
+                'sentiment_impact': sentiment_contribution,
+                'probability': scenario_config['probability'],
+                'description': scenario_config['description'],
+                'sentiment_score': sentiment_score,
+                'risk_premium': risk_premium
+            })
         
-        print(f"     {year}: ${ensemble_forecast:.1f}B (${ensemble_ci_lower:.1f}B - ${ensemble_ci_upper:.1f}B)")
+            print(f"     {year}: ${ensemble_forecast:.1f}B (${ensemble_ci_lower:.1f}B - ${ensemble_ci_upper:.1f}B)")
     
-    ensemble_results[scenario_name] = pd.DataFrame(scenario_forecasts)
+        ensemble_results[scenario_name] = pd.DataFrame(scenario_forecasts)
 
     # Calculate probability-weighted ensemble forecast
 
@@ -2162,89 +2342,127 @@ def show():
 
     for _, row in weighted_forecast_df.iterrows():
         print(f"     {row['year']}: ${row['weighted_forecast']:.1f}B (${row['weighted_lower_ci']:.1f}B - ${row['weighted_upper_ci']:.1f}B)")
-
-    # Create comprehensive visualization
-    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-
-    # Plot 1: Ensemble scenarios comparison
-    ax1 = axes[0, 0]
+    # Setup
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=[
+            "Ensemble Model: Trade Forecast Scenarios",
+            "Model Component Contributions (Baseline)",
+            "Scenario Probability vs Expected Outcome",
+            "Risk-Return Analysis"
+        ],
+        vertical_spacing=0.12,
+        horizontal_spacing=0.10
+    )
     colors = ['green', 'blue', 'red']
+    scenario_names = list(ensemble_results.keys())
+
+    # === Plot 1: Ensemble scenarios comparison ===
     for i, (scenario_name, scenario_df) in enumerate(ensemble_results.items()):
-        ax1.plot(scenario_df['year'], scenario_df['ensemble_forecast'], 
-                'o-', linewidth=2, markersize=6, label=scenario_name, color=colors[i])
-        
-        # Add confidence intervals
-        ax1.fill_between(scenario_df['year'], scenario_df['lower_ci'], scenario_df['upper_ci'], 
-                        alpha=0.2, color=colors[i])
+        fig.add_trace(go.Scatter(
+            x=scenario_df['year'],
+            y=scenario_df['ensemble_forecast'],
+            mode='lines+markers',
+            name=scenario_name,
+            line=dict(color=colors[i], width=2),
+            marker=dict(size=6),
+            legendgroup=scenario_name
+        ), row=1, col=1)
 
-    # Add probability-weighted forecast
-    ax1.plot(weighted_forecast_df['year'], weighted_forecast_df['weighted_forecast'], 
-            's--', linewidth=3, markersize=8, label='Probability-Weighted', color='black')
+        fig.add_trace(go.Scatter(
+            x=scenario_df['year'].tolist() + scenario_df['year'][::-1].tolist(),
+            y=scenario_df['upper_ci'].tolist() + scenario_df['lower_ci'][::-1].tolist(),
+            fill='toself',
+            fillcolor=f'rgba({i*80}, {255 - i*80}, 100, 0.2)',
+            line=dict(color='rgba(255,255,255,0)'),
+            showlegend=False
+        ), row=1, col=1)
 
-    ax1.set_title('Ensemble Model: Trade Forecast Scenarios', fontweight='bold')
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('Trade Value (Billions USD)')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
+    # Weighted forecast line
+    fig.add_trace(go.Scatter(
+        x=weighted_forecast_df['year'],
+        y=weighted_forecast_df['weighted_forecast'],
+        mode='lines+markers',
+        name='Probability-Weighted',
+        line=dict(color='black', width=3, dash='dash'),
+        marker=dict(symbol='square', size=8)
+    ), row=1, col=1)
 
-    # Plot 2: Model component contributions
-    ax2 = axes[0, 1]
+    # Plot 2: Component contributions (stacked bar)
     baseline_scenario = ensemble_results['Baseline']
+    years = baseline_scenario['year']
     components = ['base_forecast', 'multicountry_impact', 'economic_impact', 'sentiment_impact']
     component_labels = ['Base Forecast', 'Multi-Country Impact', 'Economic Impact', 'Sentiment Impact']
 
-    bottom = np.zeros(len(baseline_scenario))
-    for i, component in enumerate(components):
-        values = baseline_scenario[component].values
-        ax2.bar(baseline_scenario['year'], values, bottom=bottom, 
-                label=component_labels[i], alpha=0.8)
-        bottom += values
+    for component, label in zip(components, component_labels):
+        fig.add_trace(go.Bar(
+            x=years,
+            y=baseline_scenario[component],
+            name=label
+        ), row=1, col=2)
 
-    ax2.set_title('Model Component Contributions (Baseline)', fontweight='bold')
-    ax2.set_xlabel('Year')
-    ax2.set_ylabel('Contribution (Billions USD)')
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
-
-    # Plot 3: Scenario probabilities and outcomes
-    ax3 = axes[1, 0]
-    scenario_names = list(ensemble_results.keys())
+    # Plot 3: Scenario Probability vs Forecast
     avg_forecasts = [df['ensemble_forecast'].mean() for df in ensemble_results.values()]
     probabilities = [df['probability'].iloc[0] for df in ensemble_results.values()]
 
-    scatter = ax3.scatter(avg_forecasts, probabilities, s=[p*500 for p in probabilities], 
-                        c=colors, alpha=0.7)
+    fig.add_trace(go.Scatter(
+        x=avg_forecasts,
+        y=probabilities,
+        mode='markers+text',
+        text=scenario_names,
+        textposition='top center',
+        marker=dict(color=colors, size=12, opacity=0.7),
+        showlegend=False
+    ), row=2, col=1)
 
-    for i, name in enumerate(scenario_names):
-        ax3.annotate(name, (avg_forecasts[i], probabilities[i]), 
-                    xytext=(5, 5), textcoords='offset points', fontsize=10)
+    # fig.update_yaxes(
+    #     range=[0.0, 3.0]
+    # )
 
-    ax3.set_title('Scenario Probability vs Expected Outcome', fontweight='bold')
-    ax3.set_xlabel('Average Forecast (Billions USD)')
-    ax3.set_ylabel('Probability')
-    ax3.grid(True, alpha=0.3)
-
-    # Plot 4: Risk-return analysis
-    ax4 = axes[1, 1]
-    for scenario_name, scenario_df in ensemble_results.items():
+    # Plot 4: Risk-return
+    for i, scenario_name in enumerate(scenario_names):
+        scenario_df = ensemble_results[scenario_name]
         avg_forecast = scenario_df['ensemble_forecast'].mean()
-        risk_measure = scenario_df['ensemble_forecast'].std()
-        
-        ax4.scatter(risk_measure, avg_forecast, s=100, 
-                label=scenario_name, alpha=0.7)
-        ax4.annotate(scenario_name, (risk_measure, avg_forecast), 
-                    xytext=(5, 5), textcoords='offset points', fontsize=9)
+        risk = scenario_df['ensemble_forecast'].std()
 
-    ax4.set_title('Risk-Return Analysis', fontweight='bold')
-    ax4.set_xlabel('Forecast Volatility (Risk)')
-    ax4.set_ylabel('Average Forecast (Return)')
-    ax4.legend()
-    ax4.grid(True, alpha=0.3)
+        fig.add_trace(go.Scatter(
+            x=[risk],
+            y=[avg_forecast],
+            mode='markers+text',
+            name=scenario_name,
+            text=[scenario_name],
+            textposition='top center',
+            marker=dict(size=12, opacity=0.7),
+            showlegend=False
+        ), row=2, col=2)
 
-    plt.suptitle('Ensemble Model: Comprehensive Analysis', fontsize=16, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig('ensemble_model_comprehensive.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    # Layout adjustments
+    fig.update_layout(
+        height=900,
+        width=1100,
+        title_text='Ensemble Model: Comprehensive Analysis',
+        barmode='stack',
+        template='plotly_white',
+        margin=dict(t=80),
+        legend=dict(x=1.02, y=1)
+    )
+
+    # Axis labels
+    fig.update_xaxes(title_text="Year", row=1, col=1)
+    fig.update_yaxes(title_text="Trade Value (Billions USD)", row=1, col=1)
+
+    fig.update_xaxes(title_text="Year", row=1, col=2)
+    fig.update_yaxes(title_text="Contribution (Billions USD)", row=1, col=2)
+
+    fig.update_xaxes(title_text="Average Forecast (Billions USD)", row=2, col=1)
+    fig.update_yaxes(title_text="Probability", row=2, col=1)
+
+    fig.update_xaxes(title_text="Forecast Volatility (Risk)", row=2, col=2)
+    fig.update_yaxes(title_text="Average Forecast (Return)", row=2, col=2)
+
+    # Display in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
 
     # Generate final policy recommendations
     # print(f"\n💡 FINAL POLICY RECOMMENDATIONS:")
@@ -2260,9 +2478,9 @@ def show():
     upside_potential = ((optimistic_avg - baseline_avg) / baseline_avg) * 100
     downside_risk = ((baseline_avg - pessimistic_avg) / baseline_avg) * 100
 
-    # print(f"     • Expected trade value (weighted): ${weighted_avg:.1f}B annually")
-    # print(f"     • Upside potential: +{upside_potential:.1f}% (optimistic scenario)")
-    # print(f"     • Downside risk: -{downside_risk:.1f}% (pessimistic scenario)")
+    print(f"     • Expected trade value (weighted): ${weighted_avg:.1f}B annually")
+    print(f"     • Upside potential: +{upside_potential:.1f}% (optimistic scenario)")
+    print(f"     • Downside risk: -{downside_risk:.1f}% (pessimistic scenario)")
 
     # print(f"\n   Strategic Recommendations:")
     # print(f"     1. RISK MANAGEMENT: Prepare for {downside_risk:.0f}% potential decline")
@@ -2282,13 +2500,13 @@ def show():
     avg_uncertainty = np.mean(avg_ci_width)
     confidence_score = max(0, min(100, 100 - (avg_uncertainty / weighted_avg) * 100))
 
-    # print(f"   Average prediction interval width: ±${avg_uncertainty:.1f}B")
-    # print(f"   Model confidence score: {confidence_score:.0f}/100")
+    print(f"   Average prediction interval width: ±${avg_uncertainty:.1f}B")
+    print(f"   Model confidence score: {confidence_score:.0f}/100")
 
     # BLOCK 7 FINAL: Model 4 - Ensemble Model & Final Summary
 
     confidence_level = "High" if confidence_score > 75 else "Medium" if confidence_score > 50 else "Low"
-    # print(f"   Overall confidence: {confidence_level}")
+    print(f"   Overall confidence: {confidence_level}")
 
     # Save all ensemble results
     # print(f"\n💾 Saving Ensemble Model Results...")
@@ -2297,7 +2515,7 @@ def show():
     for scenario_name, scenario_df in ensemble_results.items():
         filename = f"ensemble_{scenario_name.lower()}_forecast.csv"
         scenario_df.to_csv("data/"+f"{filename}", index=False)
-        # print(f"   • {scenario_name} scenario: {filename}")
+        print(f"   • {scenario_name} scenario: {filename}")
 
     # Save probability-weighted forecast
     weighted_forecast_df.to_csv('data/ensemble_weighted_forecast.csv', index=False)
@@ -2334,10 +2552,10 @@ def show():
     }
 
     # print(f"\n🎯 FINAL MODEL PERFORMANCE SUMMARY:")
-    # for model_name, model_info in summary_results.items():
-    #     print(f"\n   {model_name}:")
-    #     for key, value in model_info.items():
-    #         print(f"     {key}: {value}")
+    for model_name, model_info in summary_results.items():
+        print(f"\n   {model_name}:")
+        for key, value in model_info.items():
+            print(f"     {key}: {value}")
 
     # # Create final executive summary
     # print(f"\n🎯 RESEARCH OBJECTIVE:")
@@ -2368,10 +2586,10 @@ def show():
 
     # print(f"\n🔮 FUTURE SCENARIOS (2025-2027):")
 
-    # for year in forecast_years:
-    #     year_data = weighted_forecast_df[weighted_forecast_df['year'] == year].iloc[0]
-    #     print(f"   {year}: ${year_data['weighted_forecast']:.1f}B")
-    #     print(f"         (Range: ${year_data['weighted_lower_ci']:.1f}B - ${year_data['weighted_upper_ci']:.1f}B)")
+    for year in forecast_years:
+        year_data = weighted_forecast_df[weighted_forecast_df['year'] == year].iloc[0]
+        print(f"   {year}: ${year_data['weighted_forecast']:.1f}B")
+        print(f"         (Range: ${year_data['weighted_lower_ci']:.1f}B - ${year_data['weighted_upper_ci']:.1f}B)")
 
     # print(f"\n⚠️  MODEL LIMITATIONS:")
     # print(f"   • Small sample sizes limit statistical power")
@@ -2386,7 +2604,6 @@ def show():
     # print(f"   • Monitor sentiment indicators as early warning system")
     # print(f"   • Prepare contingency plans for both upside and downside scenarios")
     # print(f"   • Focus on sectors with highest adjustment capacity")
-
     # print(f"\n   FOR BUSINESSES:")
     # print(f"   • Diversify supply chains to reduce single-country dependence")
     # print(f"   • Build flexibility to adapt to {avg_uncertainty/weighted_avg*100:.0f}% trade volume variations")
@@ -2401,83 +2618,126 @@ def show():
 
     # Create final visualization dashboard
     # print(f"\n📊 Creating Final Results Dashboard...")
+    # Create subplots layout
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=[
+            "US-China Electronics Trade: Historical vs Predicted",
+            "Scenario Comparison: Average Forecasts",
+            "Model Component Contributions (%)",
+            "Risk-Return Analysis"
+        ],
+        horizontal_spacing=0.12,
+        vertical_spacing=0.15
+    )
 
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 12))
+    # --- Panel 1: Historical vs Predicted ---
+    fig.add_trace(go.Scatter(
+        x=list(range(2018, 2025)),
+        y=[382.5, 306.8, 280.7, 318.0, 328.8, 280.6, 287.0],
+        mode='lines+markers',
+        name='Historical Data',
+        line=dict(color='blue', width=3),
+        marker=dict(size=8)
+    ), row=1, col=1)
 
-    # Dashboard Panel 1: Historical vs Predicted
-    ax1.plot(range(2018, 2025), [382.5, 306.8, 280.7, 318.0, 328.8, 280.6, 287.0], 
-            'b-o', linewidth=3, markersize=8, label='Historical Data')
-    ax1.plot(weighted_forecast_df['year'], weighted_forecast_df['weighted_forecast'], 
-            'r-s', linewidth=3, markersize=8, label='Ensemble Forecast')
-    ax1.fill_between(weighted_forecast_df['year'], 
-                    weighted_forecast_df['weighted_lower_ci'],
-                    weighted_forecast_df['weighted_upper_ci'],
-                    alpha=0.3, color='red', label='Confidence Interval')
-    ax1.axvline(x=2024.5, color='gray', linestyle='--', alpha=0.7, label='Forecast Start')
-    ax1.set_title('US-China Electronics Trade: Historical vs Predicted', fontweight='bold')
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('Trade Value (Billions USD)')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
+    fig.add_trace(go.Scatter(
+        x=weighted_forecast_df['year'],
+        y=weighted_forecast_df['weighted_forecast'],
+        mode='lines+markers',
+        name='Ensemble Forecast',
+        line=dict(color='red', width=3, dash='solid'),
+        marker=dict(symbol='square', size=8)
+    ), row=1, col=1)
 
-    # Dashboard Panel 2: Scenario Comparison
+    # Confidence interval
+    fig.add_trace(go.Scatter(
+        x=weighted_forecast_df['year'].tolist() + weighted_forecast_df['year'][::-1].tolist(),
+        y=weighted_forecast_df['weighted_upper_ci'].tolist() + weighted_forecast_df['weighted_lower_ci'][::-1].tolist(),
+        fill='toself',
+        fillcolor='rgba(255, 0, 0, 0.3)',
+        line=dict(color='rgba(255,255,255,0)'),
+        showlegend=True,
+        name='Confidence Interval'
+    ), row=1, col=1)
+
+    # Forecast divider line
+    fig.add_vline(x=2024.5, line_dash="dash", line_color="gray", row=1, col=1)
+
+    # --- Panel 2: Scenario Comparison ---
     scenario_names = list(ensemble_results.keys())
     scenario_values = [df['ensemble_forecast'].mean() for df in ensemble_results.values()]
     colors = ['green', 'blue', 'red']
 
-    bars = ax2.bar(scenario_names, scenario_values, color=colors, alpha=0.7)
-    ax2.axhline(y=weighted_avg, color='black', linestyle='--', linewidth=2, label=f'Weighted Average (${weighted_avg:.1f}B)')
+    fig.add_trace(go.Bar(
+        x=scenario_names,
+        y=scenario_values,
+        marker_color=colors,
+        name='Scenarios',
+        text=[f"${v:.1f}B" for v in scenario_values],
+        textposition='outside'
+    ), row=1, col=2)
 
-    # Add value labels on bars
-    for bar, value in zip(bars, scenario_values):
-        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 5, 
-                f'${value:.1f}B', ha='center', va='bottom', fontweight='bold')
+    fig.add_hline(y=weighted_avg, line_dash="dash", line_color="black",
+                annotation_text=f"Weighted Avg (${weighted_avg:.1f}B)",
+                annotation_position="top right", row=1, col=2)
 
-    ax2.set_title('Scenario Comparison: Average Forecasts', fontweight='bold')
-    ax2.set_ylabel('Average Trade Value (Billions USD)')
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
-
-    # Dashboard Panel 3: Model Contribution Analysis
+    # --- Panel 3: Model Component Contributions ---
     model_names = ['Time Series', 'Multi-Country', 'Economic Impact', 'Sentiment']
-    # Calculate approximate contributions (simplified for visualization)
-    base_contribution = 100
-    contributions = [25, 15, -10, 5]  # Percentage contributions
+    contributions = [25, 15, -10, 5]
 
-    ax3.barh(model_names, contributions, color=['skyblue', 'lightgreen', 'lightcoral', 'gold'], alpha=0.8)
-    ax3.axvline(x=0, color='black', linestyle='-', alpha=0.5)
-    ax3.set_title('Model Component Contributions (%)', fontweight='bold')
-    ax3.set_xlabel('Contribution to Final Forecast (%)')
+    fig.add_trace(go.Bar(
+        x=contributions,
+        y=model_names,
+        orientation='h',
+        marker_color=['skyblue', 'lightgreen', 'lightcoral', 'gold'],
+        text=[f'{c:+.0f}%' for c in contributions],
+        textposition='auto'
+    ), row=2, col=1)
 
-    # Add value labels
-    for i, (name, contrib) in enumerate(zip(model_names, contributions)):
-        ax3.text(contrib + (1 if contrib >= 0 else -3), i, f'{contrib:+.0f}%', 
-                va='center', ha='left' if contrib >= 0 else 'right', fontweight='bold')
-
-    ax3.grid(True, alpha=0.3)
-
-    # Dashboard Panel 4: Risk-Return Summary
-    risks = [downside_risk, avg_uncertainty/weighted_avg*100]
-    returns = [upside_potential, weighted_avg/baseline_avg*100 - 100]
+    # --- Panel 4: Risk-Return Analysis ---
+    risks = [downside_risk, avg_uncertainty / weighted_avg * 100]
+    returns = [upside_potential, weighted_avg / baseline_avg * 100 - 100]
     risk_labels = ['Policy Risk', 'Model Uncertainty']
 
-    ax4.scatter(risks, returns, s=200, alpha=0.7, c=['red', 'orange'])
+    fig.add_trace(go.Scatter(
+        x=risks,
+        y=returns,
+        mode='markers+text',
+        text=risk_labels,
+        textposition='top center',
+        marker=dict(size=20, color=['red', 'orange'], opacity=0.8)
+    ), row=2, col=2)
 
-    for i, label in enumerate(risk_labels):
-        ax4.annotate(label, (risks[i], returns[i]), xytext=(5, 5), 
-                    textcoords='offset points', fontsize=10, fontweight='bold')
+    fig.add_hline(y=0, line_dash="solid", line_color="black", row=2, col=2)
+    fig.add_vline(x=0, line_dash="solid", line_color="black", row=2, col=2)
 
-    ax4.axhline(y=0, color='black', linestyle='-', alpha=0.3)
-    ax4.axvline(x=0, color='black', linestyle='-', alpha=0.3)
-    ax4.set_title('Risk-Return Analysis', fontweight='bold')
-    ax4.set_xlabel('Risk (%)')
-    ax4.set_ylabel('Return Potential (%)')
-    ax4.grid(True, alpha=0.3)
+    # --- Layout ---
+    fig.update_layout(
+        height=900,
+        width=1100,
+        showlegend=False,
+        title_text="Q5 Predictive Modeling: Executive Dashboard",
+        title_font=dict(size=18, family='Arial', color='black'),
+        template='plotly_white',
+        margin=dict(t=80)
+    )
 
-    plt.suptitle('Q5 Predictive Modeling: Executive Dashboard', fontsize=16, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig('predictive_modeling_dashboard.png', dpi=300, bbox_inches='tight')
-    plt.show()
+    # Axis Labels
+    fig.update_xaxes(title_text="Year", row=1, col=1)
+    fig.update_yaxes(title_text="Trade Value (Billions USD)", row=1, col=1)
+
+    fig.update_yaxes(title_text="Avg Trade Value (Billions USD)", row=1, col=2)
+
+    fig.update_xaxes(title_text="Contribution to Final Forecast (%)", row=2, col=1)
+    fig.update_yaxes(title_text="", row=2, col=1)
+
+    fig.update_xaxes(title_text="Risk (%)", row=2, col=2)
+    fig.update_yaxes(title_text="Return Potential (%)", row=2, col=2)
+
+    # --- Streamlit Display ---
+    st.plotly_chart(fig, use_container_width=True)
+
 
     # Save comprehensive summary
     comprehensive_summary = {
@@ -2499,24 +2759,4 @@ def show():
         }
     }
 
-    import json
-    with open('q5_comprehensive_summary.json', 'w') as f:
-        json.dump(comprehensive_summary, f, indent=2, default=str)
-
-    # print(f"\n💾 FINAL OUTPUTS SAVED:")
-    # print(f"   📊 Executive dashboard: predictive_modeling_dashboard.png")
-    # print(f"   📋 Comprehensive summary: q5_comprehensive_summary.json")
-    # print(f"   📈 All scenario forecasts: ensemble_*_forecast.csv")
-    # print(f"   🎯 Weighted forecast: ensemble_weighted_forecast.csv")
-
-    # print(f"\n✅ Q5 PREDICTIVE MODELING COMPLETE!")
-    # print(f"   🎯 4 models successfully integrated")
-    # print(f"   📊 3 scenarios analyzed with probabilities")
-    # print(f"   🔮 3-year forecasts generated (2025-2027)")
-    # print(f"   💡 Strategic recommendations provided")
-    # print(f"   📈 Expected outcome: ${weighted_avg:.1f}B ± {avg_uncertainty:.1f}B")
-
-    # print(f"\n" + "="*80)
-    # print("PROJECT Q5 PREDICTIVE MODELING SUCCESSFULLY COMPLETED")
-    # print("All models integrated • Forecasts generated • Recommendations delivered")
-    # print("="*80)
+    print("All models integrated • Forecasts generated • Recommendations delivered")
