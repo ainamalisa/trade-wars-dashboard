@@ -1,91 +1,91 @@
 year,country1,country2,predicted_trade_intensity,scenario
-2025,China,"Korea, Rep.",3.400965993548529,Status Quo
-2025,China,Malaysia,3.400965993548529,Status Quo
-2025,China,United States,14.11757674551892,Status Quo
-2025,China,Viet Nam,3.400965993548529,Status Quo
-2025,China,Germany,3.400965993548529,Status Quo
-2025,"Korea, Rep.",China,3.400965993548529,Status Quo
-2025,"Korea, Rep.",Malaysia,3.400965993548529,Status Quo
-2025,"Korea, Rep.",United States,3.400965993548529,Status Quo
-2025,"Korea, Rep.",Viet Nam,3.400965993548529,Status Quo
-2025,"Korea, Rep.",Germany,3.400965993548529,Status Quo
-2025,Malaysia,China,3.400965993548529,Status Quo
-2025,Malaysia,"Korea, Rep.",3.400965993548529,Status Quo
-2025,Malaysia,United States,3.400965993548529,Status Quo
-2025,Malaysia,Viet Nam,3.400965993548529,Status Quo
-2025,Malaysia,Germany,3.400965993548529,Status Quo
-2025,United States,China,14.11757674551892,Status Quo
-2025,United States,"Korea, Rep.",3.400965993548529,Status Quo
-2025,United States,Malaysia,3.400965993548529,Status Quo
-2025,United States,Viet Nam,3.400965993548529,Status Quo
-2025,United States,Germany,3.400965993548529,Status Quo
-2025,Viet Nam,China,3.400965993548529,Status Quo
-2025,Viet Nam,"Korea, Rep.",3.400965993548529,Status Quo
-2025,Viet Nam,Malaysia,3.400965993548529,Status Quo
-2025,Viet Nam,United States,3.400965993548529,Status Quo
-2025,Viet Nam,Germany,3.400965993548529,Status Quo
-2025,Germany,China,3.400965993548529,Status Quo
-2025,Germany,"Korea, Rep.",3.400965993548529,Status Quo
-2025,Germany,Malaysia,3.400965993548529,Status Quo
-2025,Germany,United States,3.400965993548529,Status Quo
-2025,Germany,Viet Nam,3.400965993548529,Status Quo
-2026,China,"Korea, Rep.",3.400965993548529,Status Quo
-2026,China,Malaysia,3.400965993548529,Status Quo
-2026,China,United States,14.11757674551892,Status Quo
-2026,China,Viet Nam,3.400965993548529,Status Quo
-2026,China,Germany,3.400965993548529,Status Quo
-2026,"Korea, Rep.",China,3.400965993548529,Status Quo
-2026,"Korea, Rep.",Malaysia,3.400965993548529,Status Quo
-2026,"Korea, Rep.",United States,3.400965993548529,Status Quo
-2026,"Korea, Rep.",Viet Nam,3.400965993548529,Status Quo
-2026,"Korea, Rep.",Germany,3.400965993548529,Status Quo
-2026,Malaysia,China,3.400965993548529,Status Quo
-2026,Malaysia,"Korea, Rep.",3.400965993548529,Status Quo
-2026,Malaysia,United States,3.400965993548529,Status Quo
-2026,Malaysia,Viet Nam,3.400965993548529,Status Quo
-2026,Malaysia,Germany,3.400965993548529,Status Quo
-2026,United States,China,14.11757674551892,Status Quo
-2026,United States,"Korea, Rep.",3.400965993548529,Status Quo
-2026,United States,Malaysia,3.400965993548529,Status Quo
-2026,United States,Viet Nam,3.400965993548529,Status Quo
-2026,United States,Germany,3.400965993548529,Status Quo
-2026,Viet Nam,China,3.400965993548529,Status Quo
-2026,Viet Nam,"Korea, Rep.",3.400965993548529,Status Quo
-2026,Viet Nam,Malaysia,3.400965993548529,Status Quo
-2026,Viet Nam,United States,3.400965993548529,Status Quo
-2026,Viet Nam,Germany,3.400965993548529,Status Quo
-2026,Germany,China,3.400965993548529,Status Quo
-2026,Germany,"Korea, Rep.",3.400965993548529,Status Quo
-2026,Germany,Malaysia,3.400965993548529,Status Quo
-2026,Germany,United States,3.400965993548529,Status Quo
-2026,Germany,Viet Nam,3.400965993548529,Status Quo
-2027,China,"Korea, Rep.",3.400965993548529,Status Quo
-2027,China,Malaysia,3.400965993548529,Status Quo
-2027,China,United States,14.11757674551892,Status Quo
-2027,China,Viet Nam,3.400965993548529,Status Quo
-2027,China,Germany,3.400965993548529,Status Quo
-2027,"Korea, Rep.",China,3.400965993548529,Status Quo
-2027,"Korea, Rep.",Malaysia,3.400965993548529,Status Quo
-2027,"Korea, Rep.",United States,3.400965993548529,Status Quo
-2027,"Korea, Rep.",Viet Nam,3.400965993548529,Status Quo
-2027,"Korea, Rep.",Germany,3.400965993548529,Status Quo
-2027,Malaysia,China,3.400965993548529,Status Quo
-2027,Malaysia,"Korea, Rep.",3.400965993548529,Status Quo
-2027,Malaysia,United States,3.400965993548529,Status Quo
-2027,Malaysia,Viet Nam,3.400965993548529,Status Quo
-2027,Malaysia,Germany,3.400965993548529,Status Quo
-2027,United States,China,14.11757674551892,Status Quo
-2027,United States,"Korea, Rep.",3.400965993548529,Status Quo
-2027,United States,Malaysia,3.400965993548529,Status Quo
-2027,United States,Viet Nam,3.400965993548529,Status Quo
-2027,United States,Germany,3.400965993548529,Status Quo
-2027,Viet Nam,China,3.400965993548529,Status Quo
-2027,Viet Nam,"Korea, Rep.",3.400965993548529,Status Quo
-2027,Viet Nam,Malaysia,3.400965993548529,Status Quo
-2027,Viet Nam,United States,3.400965993548529,Status Quo
-2027,Viet Nam,Germany,3.400965993548529,Status Quo
-2027,Germany,China,3.400965993548529,Status Quo
-2027,Germany,"Korea, Rep.",3.400965993548529,Status Quo
-2027,Germany,Malaysia,3.400965993548529,Status Quo
-2027,Germany,United States,3.400965993548529,Status Quo
-2027,Germany,Viet Nam,3.400965993548529,Status Quo
+2025,China,"Korea, Rep.",3.142939564478816,Status Quo
+2025,China,Malaysia,3.142939564478816,Status Quo
+2025,China,United States,12.646305381204291,Status Quo
+2025,China,Viet Nam,3.142939564478816,Status Quo
+2025,China,Germany,3.142939564478816,Status Quo
+2025,"Korea, Rep.",China,3.142939564478816,Status Quo
+2025,"Korea, Rep.",Malaysia,3.142939564478816,Status Quo
+2025,"Korea, Rep.",United States,3.142939564478816,Status Quo
+2025,"Korea, Rep.",Viet Nam,3.142939564478816,Status Quo
+2025,"Korea, Rep.",Germany,3.142939564478816,Status Quo
+2025,Malaysia,China,3.142939564478816,Status Quo
+2025,Malaysia,"Korea, Rep.",3.142939564478816,Status Quo
+2025,Malaysia,United States,3.142939564478816,Status Quo
+2025,Malaysia,Viet Nam,3.142939564478816,Status Quo
+2025,Malaysia,Germany,3.142939564478816,Status Quo
+2025,United States,China,12.646305381204291,Status Quo
+2025,United States,"Korea, Rep.",3.142939564478816,Status Quo
+2025,United States,Malaysia,3.142939564478816,Status Quo
+2025,United States,Viet Nam,3.142939564478816,Status Quo
+2025,United States,Germany,3.142939564478816,Status Quo
+2025,Viet Nam,China,3.142939564478816,Status Quo
+2025,Viet Nam,"Korea, Rep.",3.142939564478816,Status Quo
+2025,Viet Nam,Malaysia,3.142939564478816,Status Quo
+2025,Viet Nam,United States,3.142939564478816,Status Quo
+2025,Viet Nam,Germany,3.142939564478816,Status Quo
+2025,Germany,China,3.142939564478816,Status Quo
+2025,Germany,"Korea, Rep.",3.142939564478816,Status Quo
+2025,Germany,Malaysia,3.142939564478816,Status Quo
+2025,Germany,United States,3.142939564478816,Status Quo
+2025,Germany,Viet Nam,3.142939564478816,Status Quo
+2026,China,"Korea, Rep.",3.142939564478816,Status Quo
+2026,China,Malaysia,3.142939564478816,Status Quo
+2026,China,United States,12.646305381204291,Status Quo
+2026,China,Viet Nam,3.142939564478816,Status Quo
+2026,China,Germany,3.142939564478816,Status Quo
+2026,"Korea, Rep.",China,3.142939564478816,Status Quo
+2026,"Korea, Rep.",Malaysia,3.142939564478816,Status Quo
+2026,"Korea, Rep.",United States,3.142939564478816,Status Quo
+2026,"Korea, Rep.",Viet Nam,3.142939564478816,Status Quo
+2026,"Korea, Rep.",Germany,3.142939564478816,Status Quo
+2026,Malaysia,China,3.142939564478816,Status Quo
+2026,Malaysia,"Korea, Rep.",3.142939564478816,Status Quo
+2026,Malaysia,United States,3.142939564478816,Status Quo
+2026,Malaysia,Viet Nam,3.142939564478816,Status Quo
+2026,Malaysia,Germany,3.142939564478816,Status Quo
+2026,United States,China,12.646305381204291,Status Quo
+2026,United States,"Korea, Rep.",3.142939564478816,Status Quo
+2026,United States,Malaysia,3.142939564478816,Status Quo
+2026,United States,Viet Nam,3.142939564478816,Status Quo
+2026,United States,Germany,3.142939564478816,Status Quo
+2026,Viet Nam,China,3.142939564478816,Status Quo
+2026,Viet Nam,"Korea, Rep.",3.142939564478816,Status Quo
+2026,Viet Nam,Malaysia,3.142939564478816,Status Quo
+2026,Viet Nam,United States,3.142939564478816,Status Quo
+2026,Viet Nam,Germany,3.142939564478816,Status Quo
+2026,Germany,China,3.142939564478816,Status Quo
+2026,Germany,"Korea, Rep.",3.142939564478816,Status Quo
+2026,Germany,Malaysia,3.142939564478816,Status Quo
+2026,Germany,United States,3.142939564478816,Status Quo
+2026,Germany,Viet Nam,3.142939564478816,Status Quo
+2027,China,"Korea, Rep.",3.142939564478816,Status Quo
+2027,China,Malaysia,3.142939564478816,Status Quo
+2027,China,United States,12.646305381204291,Status Quo
+2027,China,Viet Nam,3.142939564478816,Status Quo
+2027,China,Germany,3.142939564478816,Status Quo
+2027,"Korea, Rep.",China,3.142939564478816,Status Quo
+2027,"Korea, Rep.",Malaysia,3.142939564478816,Status Quo
+2027,"Korea, Rep.",United States,3.142939564478816,Status Quo
+2027,"Korea, Rep.",Viet Nam,3.142939564478816,Status Quo
+2027,"Korea, Rep.",Germany,3.142939564478816,Status Quo
+2027,Malaysia,China,3.142939564478816,Status Quo
+2027,Malaysia,"Korea, Rep.",3.142939564478816,Status Quo
+2027,Malaysia,United States,3.142939564478816,Status Quo
+2027,Malaysia,Viet Nam,3.142939564478816,Status Quo
+2027,Malaysia,Germany,3.142939564478816,Status Quo
+2027,United States,China,12.646305381204291,Status Quo
+2027,United States,"Korea, Rep.",3.142939564478816,Status Quo
+2027,United States,Malaysia,3.142939564478816,Status Quo
+2027,United States,Viet Nam,3.142939564478816,Status Quo
+2027,United States,Germany,3.142939564478816,Status Quo
+2027,Viet Nam,China,3.142939564478816,Status Quo
+2027,Viet Nam,"Korea, Rep.",3.142939564478816,Status Quo
+2027,Viet Nam,Malaysia,3.142939564478816,Status Quo
+2027,Viet Nam,United States,3.142939564478816,Status Quo
+2027,Viet Nam,Germany,3.142939564478816,Status Quo
+2027,Germany,China,3.142939564478816,Status Quo
+2027,Germany,"Korea, Rep.",3.142939564478816,Status Quo
+2027,Germany,Malaysia,3.142939564478816,Status Quo
+2027,Germany,United States,3.142939564478816,Status Quo
+2027,Germany,Viet Nam,3.142939564478816,Status Quo

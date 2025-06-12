@@ -79,34 +79,33 @@ def show():
         fig4 = px.line(yearly_trend, title="Yearly Sentiment Trend")
         st.plotly_chart(fig4, use_container_width=True)
 
-    #fig7
-    df['published_date'] = pd.to_datetime(df['published_date'], errors='coerce')
-    df['Month'] = df['published_date'].dt.to_period('M')
-    monthly_article_counts = df.groupby('Month').size()
-    monthly_article_counts.index = monthly_article_counts.index.to_timestamp()
+    # #fig7
+    # df['published_date'] = pd.to_datetime(df['published_date'], errors='coerce')
+    # df['Month'] = df['published_date'].dt.to_period('M')
+    # monthly_article_counts = df.groupby('Month').size()
+    # monthly_article_counts.index = monthly_article_counts.index.to_timestamp()
 
-    fig7 = go.Figure()
-    fig7.add_trace(go.Scatter(
-        x=monthly_article_counts.index,
-        y=monthly_article_counts.values,
-        mode='lines+markers',
-        name='Articles'
-        # line=dict(color='#3C3B6E')
-    ))
-    fig7.update_layout(
-        title="📈 Article Volume Trend by Month",
-        xaxis_title="Month",
-        yaxis_title="Number of Articles",
-        hovermode='x unified',
-        template='plotly_white'
-    )
-    st.plotly_chart(fig7, use_container_width=True)
+    # fig7 = go.Figure()
+    # fig7.add_trace(go.Scatter(
+    #     x=monthly_article_counts.index,
+    #     y=monthly_article_counts.values,
+    #     mode='lines+markers',
+    #     name='Articles'
+    #     # line=dict(color='#3C3B6E')
+    # ))
+    # fig7.update_layout(
+    #     title="📈 Article Volume Trend by Month",
+    #     xaxis_title="Month",
+    #     yaxis_title="Number of Articles",
+    #     hovermode='x unified',
+    #     template='plotly_white'
+    # )
+    # st.plotly_chart(fig7, use_container_width=True)
 
-        # Country Analysis
+    # Country Analysis
     st.subheader("Country-wise Sentiment")
     agg_df = df.groupby(['country_name', df['published_date'].dt.year])['polarity'].mean().reset_index()
     agg_df.columns = ['country_name', 'year', 'avg_polarity']
-    
     fig5 = px.choropleth(agg_df, locations="country_name", locationmode="country names",
                         color="avg_polarity", animation_frame="year",
                         color_continuous_scale=px.colors.diverging.RdYlGn,
