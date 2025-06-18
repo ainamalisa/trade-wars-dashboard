@@ -1,8 +1,11 @@
+# streamlit_app.py
 import streamlit as st
-from sections import overview, data, trends, sentiment, correlation, conclusion, predict
 
-# Streamlit page config
+# Streamlit page config - MUST be first
 st.set_page_config(page_title="TradeWars Dashboard", layout="wide")
+
+# Now import sections after page config
+from sections import overview, data, trends, sentiment, correlation, conclusion, predict
 
 # Sidebar navigation
 # --- CSS to make buttons full-width and borderless ---
@@ -30,16 +33,6 @@ st.sidebar.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# # --- Section configuration ---
-# sections = {
-#     "📌 Project Overview": overview,
-#     "📁 Data Overview": data,
-#     "📈 Trends in Trade Volume": trends,
-#     "💬 Sentiment Analysis": sentiment,
-#     "📊 Correlation Analysis": correlation,
-#     "📉 Predictive Modeling": prediction,
-#     "✅ Conclusion & Recommendations": conclusion
-# }
 sections = [
     ("📌 Project Overview", overview),
     ("📁 Data Overview", data),

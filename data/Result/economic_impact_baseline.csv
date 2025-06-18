@@ -1,0 +1,4 @@
+year,scenario,tariff_change,predicted_gdp_growth,predicted_unemployment,description
+2025,Baseline,0,0.754814406848715,4.106000000000002,Current policies continue
+2026,Baseline,0,0.754814406848715,4.106000000000002,Current policies continue
+2027,Baseline,0,0.754814406848715,4.106000000000002,Current policies continue

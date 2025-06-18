@@ -1,0 +1,4 @@
+year,scenario,ensemble_forecast,lower_ci,upper_ci,base_forecast,multicountry_impact,economic_impact,sentiment_impact,probability,description,sentiment_score,risk_premium
+2025,Baseline,272389338476.75705,213005953091.0955,333456913059.6321,285813248042.9148,0.0,-9975943256.325378,-3447966309.8323555,0.5,Most likely: current trends continue with moderate sentiment,-0.125,0.015
+2026,Baseline,272588102674.39984,197031485894.79514,350321403572.9737,286021807751.0172,0.0,-9983222764.283222,-3450482312.3341627,0.5,Most likely: current trends continue with moderate sentiment,-0.125,0.015
+2027,Baseline,272552077212.11075,182876051430.11893,364834836332.8989,285984006879.49023,0.0,-9981903373.555273,-3450026293.824175,0.5,Most likely: current trends continue with moderate sentiment,-0.125,0.015

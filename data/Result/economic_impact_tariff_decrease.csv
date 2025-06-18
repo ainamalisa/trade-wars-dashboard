@@ -1,0 +1,4 @@
+year,scenario,tariff_change,predicted_gdp_growth,predicted_unemployment,description
+2025,Tariff Decrease,-2,0.5072545868898126,13.503521048069546,2 percentage point tariff decrease
+2026,Tariff Decrease,-2,0.5072545868898126,13.503521048069546,2 percentage point tariff decrease
+2027,Tariff Decrease,-2,0.5072545868898126,13.503521048069546,2 percentage point tariff decrease

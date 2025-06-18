@@ -1,0 +1,57 @@
+reporter_name,reporter_code,year,classification,classification_version,duty_scheme_code,duty_scheme_name,product_code,mtn_categories,simple_average,trade_weighted,duty_free_share,is_electronics
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.29441292725539,0.759241836281967,0.59438595890411,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.33198210607885,0.787502695044637,0.548207191780822,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.1963700305081,0.75055102997469,0.622464814814815,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.19719504261171,0.796437420928215,0.622395061728395,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.37142553491365,0.791210333174957,0.548605821917808,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.29441292725539,0.745034844590358,0.59438595890411,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T,Electrical machinery and electronic equipment,1.19719504261171,0.783937421358092,0.622395061728395,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.649348958333333,0.341601022372054,0.7890625,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.698280423280423,0.368793332511107,0.785714285714286,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.805094482237339,0.534142304229835,0.678950793650794,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.709232804232804,0.37726694367688,0.785714285714286,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.735280927185689,0.457186118530507,0.678950793650794,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.655476190476191,0.349112793237666,0.7890625,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,V02,Measuring instruments,0.684713541666667,0.364694415557306,0.7890625,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0009160656983859,0.990740740740741,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0007295641076802,0.990740740740741,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0007867356341601,0.990740740740741,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0007667335260663,0.990740740740741,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0006328952774315,0.990740740740741,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0010216536734837,0.990740740740741,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,S04,Computers and office machinery,0.0185185185185185,0.0010715322967689,0.990740740740741,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.34714294714295,1.11290093416496,0.684881081081081,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.1625357975358,0.884439514018744,0.7595875,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.1625357975358,0.970427354310205,0.7595875,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.1625357975358,0.798594054305188,0.7595875,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.25679545679546,1.02981292804382,0.740094594594595,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.30129352629353,1.05780954837014,0.684881081081081,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T05,Audio-visual devices,1.25679545679546,0.957668852329866,0.740094594594595,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.79214451058201,1.5696308079517,0.40528125,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.79214451058201,1.56367917371876,0.40528125,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.63493245124137,1.53868371682777,0.450176397515528,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.85377207827575,1.68128672531192,0.356779861111111,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.63659272404614,1.53867409894145,0.450036024844721,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.63659272404614,1.53232232830956,0.450036024844721,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T01,Electrical machinery,1.82092385912698,1.63572621519663,0.35655,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.140625,0.0130632706003861,0.96875,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.140625,0.0170968306678174,0.96875,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.410818181818182,0.0606136793374997,0.826372,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.0,0.0,1.0,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.140625,0.0231891729994642,0.96875,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.0,0.0,1.0,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T04,Telecommunication equipment,0.207181818181818,0.0393589970252616,0.82304,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T02,Electronic components,0.0,0.0,1.0,True
+United States,C840,2020,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2019,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2018,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2023,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2022,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2021,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True
+United States,C840,2024,MTN,MT4,A0002,MFN statutory (legal/autonomous) duty,T03,Semiconductors,0.0,0.0,1.0,True

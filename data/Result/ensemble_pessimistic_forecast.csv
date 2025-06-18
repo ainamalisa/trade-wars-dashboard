@@ -1,0 +1,4 @@
+year,scenario,ensemble_forecast,lower_ci,upper_ci,base_forecast,multicountry_impact,economic_impact,sentiment_impact,probability,description,sentiment_score,risk_premium
+2025,Pessimistic,193404422042.71918,151240476149.38925,236764191679.07523,285813248042.9148,-82633892337.22374,-3278144292.0277867,-6496789370.944052,0.25,Worst case: tariff escalation + negative sentiment + economic slowdown,-0.325,0.015
+2026,Pessimistic,193545550454.65656,139898135759.6442,248738474736.61887,286021807751.0172,-82694190803.38382,-3280536374.3449793,-6501530118.631868,0.25,Worst case: tariff escalation + negative sentiment + economic slowdown,-0.325,0.015
+2027,Pessimistic,193519971319.46793,129847361978.57753,259043437810.74713,285984006879.49023,-82683261872.79924,-3280102816.026468,-6500670871.196592,0.25,Worst case: tariff escalation + negative sentiment + economic slowdown,-0.325,0.015
