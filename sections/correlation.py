@@ -42,7 +42,7 @@ def show():
             'GDP Growth': 'GDP growth (annual %) [NY.GDP.MKTP.KD.ZG]',
             'Inflation Rate': 'Inflation, consumer prices (annual %) [FP.CPI.TOTL.ZG]',
             'Stock Market': 'S&P Global Equity Indices (annual % change) [CM.MKT.INDX.ZG]',
-            'Employment Rate': 'Unemployment, total (% of total labor force) (modeled ILO estimate) [SL.UEM.TOTL.ZS]'
+            'Unemployment Rate': 'Unemployment, total (% of total labor force) (modeled ILO estimate) [SL.UEM.TOTL.ZS]'
         }
         target_col = 'Tariff rate, applied, weighted mean, all products (%) [TM.TAX.MRCH.WM.AR.ZS]'
         
