@@ -102,15 +102,37 @@ def show():
     # )
     # st.plotly_chart(fig7, use_container_width=True)
 
-    # Country Analysis
-    st.subheader("Country-wise Sentiment")
-    agg_df = df.groupby(['country_name', df['published_date'].dt.year])['polarity'].mean().reset_index()
-    agg_df.columns = ['country_name', 'year', 'avg_polarity']
-    fig5 = px.choropleth(agg_df, locations="country_name", locationmode="country names",
-                        color="avg_polarity", animation_frame="year",
-                        color_continuous_scale=px.colors.diverging.RdYlGn,
-                        range_color=[-1, 1], title="Global Sentiment Over Time")
-    st.plotly_chart(fig5, use_container_width=True)
+    # # Country Analysis
+    # st.subheader("Country-wise Sentiment")
+    # agg_df = df.groupby(['country_name', df['published_date'].dt.year])['polarity'].mean().reset_index()
+    # agg_df.columns = ['country_name', 'year', 'avg_polarity']
+    # fig5 = px.choropleth(agg_df, locations="country_name", locationmode="country names",
+    #                     color="avg_polarity", animation_frame="year",
+    #                     color_continuous_scale=px.colors.diverging.RdYlGn,
+    #                     range_color=[-1, 1], title="Global Sentiment Over Time")
+    # st.plotly_chart(fig5, use_container_width=True)
+
+    #sentiment count by country in 2025
+    # Filter only 2025 and ensure values are numeric
+    # year_data = agg_df[agg_df['year'] == '2025'].copy()
+    # for col in ['negative', 'neutral', 'positive']:
+    #     year_data[col] = pd.to_numeric(year_data[col], errors='coerce')
+
+    # # Plot stacked bar chart with USA colors
+    # fig, ax = plt.subplots(figsize=(14, 8))
+    # ax.bar(year_data['country_name'], year_data['negative'], label='Negative', color=usa_colors[2])
+    # ax.bar(year_data['country_name'], year_data['neutral'], bottom=year_data['negative'], label='Neutral', color=usa_colors[1])
+    # bottom = year_data['negative'] + year_data['neutral']
+    # ax.bar(year_data['country_name'], year_data['positive'], bottom=bottom, label='Positive', color=usa_colors[0])
+
+    # ax.set_title("Sentiment Counts by Country (2025)")
+    # ax.set_ylabel("Article Count")
+    # ax.set_xlabel("Country")
+    # ax.legend()
+    # plt.xticks(rotation=90)
+    # plt.tight_layout()
+    # plt.show()
+
 
     # News Source Analysis - NEW SECTION
     st.subheader("News Source Sentiment Analysis")
